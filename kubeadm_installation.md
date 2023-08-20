@@ -41,7 +41,7 @@ apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
     kubeadm init
     ```
 
-2. Set up local kubeconfig:
+2. Set up local kubeconfig (both for root user and normal user):
 
     ```bash
     mkdir -p $HOME/.kube
