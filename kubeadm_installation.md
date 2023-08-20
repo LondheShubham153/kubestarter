@@ -60,6 +60,7 @@ apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
     ```bash
     kubeadm token create --print-join-command
     ```
+5. Expose port 6443 in the Security group for the Worker to connect to Master Node
 
 ---
 
