@@ -1,4 +1,4 @@
-## Kubernetes Kickstarter
+## Kubernetes kubestarter
 
 ## Architecture Guides
 
