@@ -17,7 +17,7 @@ Run the following commands on both the master and worker nodes to prepare them f
 
 ```bash
 # using 'sudo su' is not a good practice.
-sudo apt update -y
+sudo apt update
 sudo apt-get install -y apt-transport-https ca-certificates curl
 sudo apt install docker.io -y
 
@@ -29,7 +29,7 @@ curl -fsSL "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | sudo gpg --
 # Add the repository to the sourcelist.
 echo 'deb https://packages.cloud.google.com/apt kubernetes-xenial main' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-sudo apt update -y
+sudo apt update 
 sudo apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
 ```
 
