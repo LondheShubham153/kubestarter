@@ -7,7 +7,7 @@ This guide provides step-by-step instructions for installing Minikube on Ubuntu.
 * Ubuntu OS
 * sudo privileges
 * Internet access
-* Virtualization support enabled (Check with `egrep -c '(vmx|svm)' /proc/cpuinfo`)
+* Virtualization support enabled (Check with `egrep -c '(vmx|svm)' /proc/cpuinfo`, 0=disabled 1=enabled) 
 
 ---
 
@@ -40,9 +40,15 @@ sudo apt install -y docker.io
 Start and enable Docker.
 
 ```bash
-sudo systemctl start docker
-sudo systemctl enable docker
+sudo systemctl enable --now docker
 ```
+
+Add current user to docker group (To use docker without root)
+
+```bash
+sudo usermod -aG docker $USER
+```
+Now, logout (use `exit` command) and connect again.
 
 ---
 
