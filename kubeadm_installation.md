@@ -94,4 +94,14 @@ If you want to label worker nodes, you can use the following command:
 ```bash
 kubectl label node <node-name> node-role.kubernetes.io/worker=worker
 ```
+
+---
+
+## Optional: Test a demo Pod 
+
+If you want to test a demo pod, you can use the following command:
+
+```bash
+kubectl run hello-world-pod --image=busybox --restart=Never --command -- sh -c "echo 'Hello, World' && sleep 3600"
+```
 ```
