@@ -17,23 +17,23 @@ Kubernetes is like a super helper in the process of getting the application read
 
 Let us understand this through a simple workflow of a CI/CD pipeline for a containerized application.
 
-1. Commiting Code: Developers commit their code changes to a version control system like Git. 
-2. Build: An automated build is triggered in a CI/CD tool like Jenkins to build a Docker image from the application code.
-3. Run Tests: Automated tests are run on the Docker image to ensure it meets the set functionality/standards.
-4. Push Artifacts: Once the testing stage is completed, the image is pushed to an Artifact Management System like Artifactory/Dockerhub/Docker Trusted Registry. 
-5. Deployment using Kubernetes: In this stage, we leverage the power of Kubernetes to streamline and automate the deployment process of the application. Let's get into the process by breaking it down into various essential steps.
+1. **Commiting Code**: Developers commit their code changes to a version control system like Git. 
+2. **Build**: An automated build is triggered in a CI/CD tool like Jenkins to build a Docker image from the application code.
+3. **Run Tests**: Automated tests are run on the Docker image to ensure it meets the set functionality/standards.
+4. **Push Artifacts**: Once the testing stage is completed, the image is pushed to an Artifact Management System like Artifactory/Dockerhub/Docker Trusted Registry. 
+5. **Deployment using Kubernetes**: In this stage, we leverage the power of Kubernetes to streamline and automate the deployment process of the application. Let's get into the process by breaking it down into various essential steps.
 
-* Deployment Manifest File:
+* **Deployment Manifest File**:
  A Kubernetes deployment script, deployment YAML file, holds the critical configuration instructions that Kubernetes requires to manage and deploy the application. Within this YAML file, we define the application's name, specify the container image to be used, determine the desired number of instances (replicas), and include other essential configuration. This YAML file acts as a comprehensive guide for Kubernetes, detailing how to create, maintain, and update the application's environment.
  The deployment YAML file is stored in the same repository as the application code. This allows for easy collaboration, versioning, and synchronization between the application code and its deployment configuration.
 
-* Deployment in Staging Environment:
+* **Deployment in Staging Environment**:
  After generating a new image for the application through CI, the next step is to deploy it to a staging environment within the Kubernetes cluster. This staging environment, often known as "Staging" or "Pre-Prod", closely resembles the production setup but operates in isolation for testing.
 
-* Testing in Staging Environment:
+* **Testing in Staging Environment**:
  Automated testing and validation is performed in the staging environment to ensure the new version of the application image works as expected. 
 
-* Production Deployment:
+* **Production Deployment**:
  Once the testing in staging environment passes successfully, the new version of the application can be deployed to the production environment using the same deployment YAML script that guided the staging deployment. This ensures consistent setup in the production environment and the transition from staging to production is seamless.
 
 ## Conclusion
