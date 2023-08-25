@@ -13,4 +13,4 @@
 ## Practice Projects
 
 1. [Microservices on k8s](https://github.com/LondheShubham153/microservices-k8s)
-2. [Django App Deployment](https://github.com/LondheShubham153/kubernetes-project)
+2. [Django App Deployment](https://github.com/LondheShubham153/django-todo-cicd)
