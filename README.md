@@ -19,3 +19,4 @@
 1. [Microservices on k8s](https://github.com/LondheShubham153/microservices-k8s)
 2. [Django App Deployment](https://github.com/LondheShubham153/django-todo-cicd)
 3. [Redit Clone with Ingress](https://github.com/LondheShubham153/reddit-clone-k8s-ingress)
+4. [For More Challenges, Check Out These Ideas](./examples/More_K8s_Practice_Ideas.md)
