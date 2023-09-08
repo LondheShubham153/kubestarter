@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "flask-chart.fullname" . }}
+  labels:
+    {{- include "flask-chart.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.ports.port }}
+      targetPort: {{ .Values.service.ports.targetPort }}
+      protocol: TCP
+      name: http
+      nodePort: {{ .Values.service.ports.nodePort }}
+  selector:
+    {{- include "flask-chart.selectorLabels" . | nindent 4 }}

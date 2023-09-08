@@ -16,18 +16,21 @@ This guide outlines the steps needed to set up a Kubernetes cluster using kubead
 Run the following commands on both the master and worker nodes to prepare them for kubeadm.
 
 ```bash
-sudo su
-apt update -y
-apt install docker.io -y
+# using 'sudo su' is not a good practice.
+sudo apt update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo apt install docker.io -y
 
-systemctl start docker
-systemctl enable docker
+sudo systemctl enable --now docker # enable and start in single command.
 
+# Adding GPG keys.
 curl -fsSL "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg
-echo 'deb https://packages.cloud.google.com/apt kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list
 
-apt update -y
-apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
+# Add the repository to the sourcelist.
+echo 'deb https://packages.cloud.google.com/apt kubernetes-xenial main' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt update 
+sudo apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
 ```
 
 **Sample Command run on master node**
@@ -45,8 +48,7 @@ apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
 1. Initialize the Kubernetes master node.
 
     ```bash
-    sudo su
-    kubeadm init
+    sudo kubeadm init
     ```
     <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/4fed3d68-eb41-423d-b83f-35c3cc11476e)</kbd>
 
@@ -78,7 +80,7 @@ apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
 5. Generate a token for worker nodes to join:
 
     ```bash
-    kubeadm token create --print-join-command
+    sudo kubeadm token create --print-join-command
     ```
 
     <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/0370839b-bbac-415c-9d5a-9ab52cd3108b)</kbd>
@@ -95,12 +97,12 @@ apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
 1. Run the following commands on the worker node.
 
     ```bash
-    sudo su
-    kubeadm reset pre-flight checks
+    sudo kubeadm reset pre-flight checks
     ```
     <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/3d29912b-f1a3-4e0b-a6ee-6c9cc5db49fb)</kbd>
 
 2. Paste the join command you got from the master node and append `--v=5` at the end.
+*Make sure either you are working as sudo user or use `sudo` before the command*
 
    <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/c41e3213-7474-43f9-9a7b-a75694be582a)</kbd>
 
