@@ -19,6 +19,7 @@ sudo apt-get install helm
 
 ##### Important Helm Commands
 
+- `helm template [CHART]`: It will show you the plan or what helm is going to deploy 
 - `helm create [CHART]`: Scaffold a new Helm chart.
 - `helm package [CHART]`: Package the chart into a chart archive.
 - `helm install [NAME] [CHART]`: Install a Helm chart.
