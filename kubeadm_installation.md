@@ -4,122 +4,128 @@ This guide outlines the steps needed to set up a Kubernetes cluster using kubead
 
 ## Pre-requisites
 
-* Ubuntu OS (Xenial or later)
-* sudo privileges
-* Internet access
-* t2.medium instance type or higher
+- Ubuntu OS (Xenial or later)
+- sudo privileges
+- Internet access
+- t2.medium instance type or higher
 
 ---
 
-## Both Master & Worker Node
+## AWS Setup
+
+- Make sure your all instance are in same **Security group**.
+- Expose port **6443** in the **Security group**, so that worker nodes can join the cluster.
+
+---
+
+## Execute on Both "Master" & "Worker Node"
 
 Run the following commands on both the master and worker nodes to prepare them for kubeadm.
 
 ```bash
-# using 'sudo su' is not a good practice.
-sudo apt update
-sudo apt-get install -y apt-transport-https ca-certificates curl
-sudo apt install docker.io -y
+# disable swap
+sudo swapoff -a
 
-sudo systemctl enable --now docker # enable and start in single command.
+# Create the .conf file to load the modules at bootup
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
 
-# Adding GPG keys.
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+sudo modprobe overlay
+sudo modprobe br_netfilter
 
-# Add the repository to the sourcelist.
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+# sysctl params required by setup, params persist across reboots
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
 
-sudo apt update 
-sudo apt install -y kubeadm=1.28.1-1.1 kubelet=1.28.1-1.1 kubectl=1.28.1-1.1 -y
+# Apply sysctl params without reboot
+sudo sysctl --system
 
+## Install CRIO Runtime
+sudo apt-get update -y
+sudo apt-get install -y software-properties-common curl apt-transport-https ca-certificates gpg
+
+sudo curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/prerelease:/main/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
+echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/prerelease:/main/deb/ /" | sudo tee /etc/apt/sources.list.d/cri-o.list
+
+sudo apt-get update -y
+sudo apt-get install -y cri-o
+
+sudo systemctl daemon-reload
+sudo systemctl enable crio --now
+sudo systemctl start crio.service
+
+echo "CRI runtime installed successfully"
+
+# Add Kubernetes APT repository and install required packages
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update -y
+sudo apt-get install -y kubelet="1.29.0-*" kubectl="1.29.0-*" kubeadm="1.29.0-*"
+sudo apt-get update -y
+sudo apt-get install -y jq
+
+sudo systemctl enable --now kubelet
+sudo systemctl start kubelet
 ```
 
-**Sample Command run on master node**
+---
 
-<kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/a4e7a4af-31fa-40cf-bb9e-64ba18999cb5)</kbd>
+## Execute ONLY on "Master Node"
 
-<kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/acf157b8-5c7b-44e7-91ef-b5437053be60)</kbd>
+```bash
+sudo kubeadm config images pull
 
-<kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/8f960aae-3706-43cd-bac8-1903fbe8196d)</kbd>
+sudo kubeadm init
+
+mkdir -p "$HOME"/.kube
+sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
+sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
+
+
+# Network Plugin = calico
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
+
+kubeadm token create --print-join-command
+```
+
+- You will get `kubeadm token`, **Copy it**.
+  <img src="https://raw.githubusercontent.com/faizan35/kubernetes_cluster_with_kubeadm/main/Img/kubeadm-token.png" width="75%">
 
 ---
 
-## Master Node
+## Execute on ALL of your Worker Node's
 
-1. Initialize the Kubernetes master node.
+1. Perform pre-flight checks
 
-    ```bash
-    sudo kubeadm init
-    ```
-    <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/4fed3d68-eb41-423d-b83f-35c3cc11476e)</kbd>
-
-    After succesfully running, your Kubernetes control plane will be initialized successfully.
-
-   <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/760276f4-9146-4bc1-aa92-48cc1c0b13f4)</kbd>
-
-
-3. Set up local kubeconfig (both for root user and normal user):
-
-    ```bash
-    mkdir -p $HOME/.kube
-    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-    sudo chown $(id -u):$(id -g) $HOME/.kube/config
-    ```
-
-    <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/f647adc1-0976-490e-b9c9-f6f96908d6fe)</kbd>
-
-
-4. Apply Weave network:
-
-    ```bash
-    kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
-    ```
-
-    <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/ec7b4684-7719-4d09-81d8-eee27b98972a)</kbd>
-
-
-5. Generate a token for worker nodes to join:
-
-    ```bash
-    sudo kubeadm token create --print-join-command
-    ```
-
-    <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/0370839b-bbac-415c-9d5a-9ab52cd3108b)</kbd>
-
-6. Expose port 6443 in the Security group for the Worker to connect to Master Node
-
-<kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/b3f5df01-acb0-419f-aa70-6d51819f4ec0)</kbd>
-
-
----
-
-## Worker Node
-
-1. Run the following commands on the worker node.
-
-    ```bash
-    sudo kubeadm reset pre-flight checks
-    ```
-    <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/3d29912b-f1a3-4e0b-a6ee-6c9cc5db49fb)</kbd>
+   ```bash
+   sudo kubeadm reset pre-flight checks
+   ```
 
 2. Paste the join command you got from the master node and append `--v=5` at the end.
-*Make sure either you are working as sudo user or use `sudo` before the command*
 
-   <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/c41e3213-7474-43f9-9a7b-a75694be582a)</kbd>
+   ```bash
+   sudo your-token --v=5
+   ```
 
-   After succesful join->
-   <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/c530b65a-4afd-4b1d-9748-421c216d64cd)</kbd>
+   > Use `sudo` before the token.
 
 ---
 
 ## Verify Cluster Connection
 
-On Master Node:
+**On Master Node:**
 
 ```bash
 kubectl get nodes
 ```
-<kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/4ed4dcac-502a-4cc1-a63e-c9cbb0199428)</kbd>
+
+   <img src="https://raw.githubusercontent.com/faizan35/kubernetes_cluster_with_kubeadm/main/Img/nodes-connected.png" width="70%">
 
 ---
 
@@ -133,7 +139,7 @@ kubectl label node <node-name> node-role.kubernetes.io/worker=worker
 
 ---
 
-## Optional: Test a demo Pod 
+## Optional: Test a demo Pod
 
 If you want to test a demo pod, you can use the following command:
 
