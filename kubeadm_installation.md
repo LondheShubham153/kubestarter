@@ -25,7 +25,7 @@ Run the following commands on both the master and worker nodes to prepare them f
 ```bash
 # disable swap
 sudo swapoff -a
-
+(crontab -l 2>/dev/null; echo "@reboot /sbin/swapoff -a") | crontab - || true
 # Create the .conf file to load the modules at bootup
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
