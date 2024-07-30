@@ -14,7 +14,7 @@ This guide outlines the steps needed to set up a Kubernetes cluster using kubead
 ## AWS Setup
 
 - Make sure your all instance are in same **Security group**.
-- Expose port **6443** in the **Security group**, so that worker nodes can join the cluster.
+- Expose port **6443**, **2379**-**2380**, **10250**, **10251**, **10252**, **10255** in the **Security group**, so that worker nodes can join the cluster.
 
 ---
 
@@ -23,10 +23,10 @@ This guide outlines the steps needed to set up a Kubernetes cluster using kubead
 Run the following commands on both the master and worker nodes to prepare them for kubeadm.
 
 ```bash
-# disable swap
+# 1. Disable Swap: This is required for Kubernetes to function correctly.
 sudo swapoff -a
 
-# Create the .conf file to load the modules at bootup
+# 2. Load Necessary Kernel Modules: These are required for Kubernetes networking.
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -35,17 +35,17 @@ EOF
 sudo modprobe overlay
 sudo modprobe br_netfilter
 
-# sysctl params required by setup, params persist across reboots
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+# 3. Set Sysctl Parameters: These parameters help with networking
+ccat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
 EOF
 
-# Apply sysctl params without reboot
 sudo sysctl --system
 
 ## Install CRIO Runtime
+# 1. Install Required Packages: These commands install CRI-O
 sudo apt-get update -y
 sudo apt-get install -y software-properties-common curl apt-transport-https ca-certificates gpg
 
@@ -61,11 +61,15 @@ sudo systemctl start crio.service
 
 echo "CRI runtime installed successfully"
 
-# Add Kubernetes APT repository and install required packages
+## Install Kubernetes Components
+
+# 1. Add Kubernetes APT Repository:
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update -y
+
+# 2. Install Kubernetes Packages:
 sudo apt-get install -y kubelet="1.29.0-*" kubectl="1.29.0-*" kubeadm="1.29.0-*"
 sudo apt-get update -y
 sudo apt-get install -y jq
@@ -79,19 +83,23 @@ sudo systemctl start kubelet
 ## Execute ONLY on "Master Node"
 
 ```bash
+# 1. Pull Kubernetes Control Plane Images:
 sudo kubeadm config images pull
 
+# 2. Initialize the Cluster:
 sudo kubeadm init
 
+# 3.Set Up Local kubeconfig:
 mkdir -p "$HOME"/.kube
 sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
 sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
 
-
-# Network Plugin = calico
+# 4. Install a Network Plugin (Calico):
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
 
+# 5. Generate Join Command:
 kubeadm token create --print-join-command
+
 ```
 
 - You will get `kubeadm token`, **Copy it**.
@@ -104,13 +112,13 @@ kubeadm token create --print-join-command
 1. Perform pre-flight checks
 
    ```bash
-   sudo kubeadm reset pre-flight checks
+   sudo kubeadm reset pre-flight check
    ```
 
-2. Paste the join command you got from the master node and append `--v=5` at the end.
+2. Join the Cluster: Use the join command provided by the master node, appending --v=5 for verbose output.
 
    ```bash
-   sudo your-token --v=5
+   sudo kubeadm join <control-plane-ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> --cri-socket "unix:///var/run/crio/crio.sock" --v=5
    ```
 
    > Use `sudo` before the token.
