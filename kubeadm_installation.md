@@ -135,6 +135,11 @@ kubectl get nodes
 
    <img src="https://raw.githubusercontent.com/faizan35/kubernetes_cluster_with_kubeadm/main/Img/nodes-connected.png" width="70%">
 
+**Checking Pod On Worker node Node:**
+```bash
+sudo crictl ps
+```
+# Since we have used CRIO as Container Runtime, we have to use crio commands on worker node to check pods.
 ---
 
 ## Optional: Labeling Nodes
