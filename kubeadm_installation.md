@@ -36,7 +36,7 @@ sudo modprobe overlay
 sudo modprobe br_netfilter
 
 # 3. Set Sysctl Parameters: These parameters help with networking
-ccat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
