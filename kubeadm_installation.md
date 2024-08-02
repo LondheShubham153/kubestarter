@@ -14,7 +14,7 @@ This guide outlines the steps needed to set up a Kubernetes cluster using kubead
 ## AWS Setup
 
 - Make sure your all instance are in same **Security group**.
-- Expose port **6443**, **2379**-**2380**, **10250**, **10251**, **10252**, **10255** in the **Security group**, so that worker nodes can join the cluster.
+- Expose port **6443** in the **Security group**, so that worker nodes can join the cluster.
 
 ---
 
