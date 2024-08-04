@@ -10,7 +10,7 @@ This document explains the key components that make up the architecture of a Kub
 
 ---
 
-![Kubernetes Architecture Diagram](https://d33wubrfki0l68.cloudfront.net/2475489eaf20163ec0f54ddc1d92aa8d4c87c96b/e7c81/images/docs/components-of-kubernetes.svg)
+![Kubernetes Architecture Diagram](https://miro.medium.com/v2/resize:fit:1400/1*0Sudxeu5mQyN3ahi1FV49A.png)
 
 
 ## Control Plane (Master Node Components)
