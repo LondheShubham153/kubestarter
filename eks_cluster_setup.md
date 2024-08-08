@@ -65,7 +65,6 @@ eksctl create nodegroup --cluster=my-cluster \
 ```bash
 aws eks update-kubeconfig --region us-west-2 --name my-cluster
 ```
-#### Note: Make sure the ssh-public-key "eks-nodegroup-key is available in your aws account"
 #
 
 - Delete EKS Cluster
