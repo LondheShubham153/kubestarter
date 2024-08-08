@@ -1,0 +1,5 @@
+# namespaces.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apache-namespace
