@@ -173,4 +173,17 @@ Open <b>/etc/hosts</b> file and add your minikube ip and domain name at the last
   ```bash
   curl http://tws.com/nginx
   ```
+<center>OR</center>
+
+
+- port forward to access the Apache service on browser.
+  ```bash
+  kubectl port-forward svc/apache-service 8081:80 --address 0.0.0.0 &
+  ```
+- port forward to access the NGINX service on browser.
+  ```bash
+  kubectl port-forward svc/nginx-service 8082:80 --address 0.0.0.0 &
+  ```
+
+#
 
