@@ -1,0 +1,10 @@
+# apache-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: apache-namespace
+  name: apache-manager
+rules:
+- apiGroups: ["", "apps", "extensions"]
+  resources: ["deployments", "services", "pods"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

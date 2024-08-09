@@ -1,0 +1,14 @@
+# apache-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: apache-manager-binding
+  namespace: apache-namespace
+subjects:
+- kind: User
+  name: apache-user # This should be replaced with the actual user name
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: apache-manager
+  apiGroup: rbac.authorization.k8s.io
