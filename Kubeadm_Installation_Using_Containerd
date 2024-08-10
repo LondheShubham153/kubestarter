@@ -95,3 +95,34 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/
 # 4. Generate Join Command
 kubeadm token create --print-join-command
 
+---
+
+## Execute on ALL of your Worker Node's
+
+1. Perform pre-flight checks
+
+   ```bash
+   sudo kubeadm reset pre-flight checks
+   ```
+
+2. Paste the join command you got from the master node and append `--v=5` at the end.
+
+   ```bash
+   sudo your-token --v=5
+   ```
+
+   > Use `sudo` before the token.
+
+---
+
+## Verify Cluster Connection
+
+**On Master Node:**
+
+```bash
+kubectl get nodes
+```
+
+   <img src="https://raw.githubusercontent.com/faizan35/kubernetes_cluster_with_kubeadm/main/Img/nodes-connected.png" width="70%">
+
+---
