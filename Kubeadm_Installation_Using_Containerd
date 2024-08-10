@@ -1,11 +1,11 @@
 # Kubeadm Installation Guide
 
-This guide outlines the steps needed to set up a Kubernetes cluster using kubeadm.
+This guide outlines the steps needed to set up a Kubernetes cluster using `kubeadm`.
 
-## Pre-requisites
+## Prerequisites
 
 - Ubuntu OS (Xenial or later)
-- sudo privileges
+- `sudo` privileges
 - Internet access
 - t2.medium instance type or higher
 
@@ -13,20 +13,20 @@ This guide outlines the steps needed to set up a Kubernetes cluster using kubead
 
 ## AWS Setup
 
-- Make sure your all instance are in same **Security group**.
-- Expose port **6443** in the **Security group**, so that worker nodes can join the cluster.
+- Ensure that all instances are in the same **Security Group**.
+- Expose port **6443** in the **Security Group** to allow worker nodes to join the cluster.
 
 ---
 
-## Execute on Both "Master" & "Worker Node"
+## Execute on Both "Master" & "Worker" Nodes
 
-Run the following commands on both the master and worker nodes to prepare them for kubeadm.
+Run the following commands on both the master and worker nodes to prepare them for `kubeadm`.
 
 ```bash
-# 1. Disable Swap: This is required for Kubernetes to function correctly.
+# 1. Disable Swap: Required for Kubernetes to function correctly.
 sudo swapoff -a
 
-# 2. Load Necessary Kernel Modules: These are required for Kubernetes networking.
+# 2. Load Necessary Kernel Modules: Required for Kubernetes networking.
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -35,7 +35,7 @@ EOF
 sudo modprobe overlay
 sudo modprobe br_netfilter
 
-# 3. Set Sysctl Parameters: These parameters help with networking
+# 3. Set Sysctl Parameters: Helps with networking.
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
@@ -46,94 +46,52 @@ sudo sysctl --system
 lsmod | grep br_netfilter
 lsmod | grep overlay
 
-## Install Containerd 
-
+# 4. Install Containerd
 sudo apt-get update
-sudo apt-get install ca-certificates curl
+sudo apt-get install -y ca-certificates curl
 sudo install -m 0755 -d /etc/apt/keyrings
 sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 sudo chmod a+r /etc/apt/keyrings/docker.asc
 
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 sudo apt-get update
-sudo apt-get install containerd.io
+sudo apt-get install -y containerd.io
 
 containerd config default | sed -e 's/SystemdCgroup = false/SystemdCgroup = true/' -e 's/sandbox_image = "registry.k8s.io\/pause:3.6"/sandbox_image = "registry.k8s.io\/pause:3.9"/' | sudo tee /etc/containerd/config.toml
 
 sudo systemctl restart containerd
 sudo systemctl status containerd
 
-## Install Kubernetes Components
+# 5. Install Kubernetes Components
 sudo apt-get update
-
-# apt-transport-https may be a dummy package; if so, you can skip that package
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 
-# If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
-# sudo mkdir -p -m 755 /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
- # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
-## Execute ONLY on "Master Node"
+## Execute ONLY on the "Master" Node
+Run the following commands exclusively on the master node:
 
-# 1.Initialize the Cluster:
+# 1. Initialize the Cluster
 sudo kubeadm init
 
-# 2.Set Up Local kubeconfig:
+# 2. Set Up Local kubeconfig
 mkdir -p "$HOME"/.kube
 sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
 sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
 
-# 3. Install a Network Plugin (Calico):
+# 3. Install a Network Plugin (Calico)
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
 
-# 4. Generate Join Command:
+# 4. Generate Join Command
 kubeadm token create --print-join-command
-
-
-```
-
-- You will get `kubeadm token`, **Copy it**.
-  <img src="https://raw.githubusercontent.com/faizan35/kubernetes_cluster_with_kubeadm/main/Img/kubeadm-token.png" width="75%">
-
----
-
-## Execute on ALL of your Worker Node's
-
-1. Perform pre-flight checks
-
-   ```bash
-   sudo kubeadm reset pre-flight check
-   ```
-
-2. Join the Cluster: Use the join command provided by the master node, appending --v=5 for verbose output.
-
-   ```bash
-   sudo kubeadm join <control-plane-ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> 
-   ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
