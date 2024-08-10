@@ -20,8 +20,6 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 ## Execute on Both "Master" & "Worker" Nodes
 
-Run the following commands on both the master and worker nodes to prepare them for `kubeadm`.
-
 ```bash
 # 1. Disable Swap: Required for Kubernetes to function correctly.
 sudo swapoff -a
@@ -77,10 +75,10 @@ echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.
 sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
-
+```
 ## Execute ONLY on the "Master" Node
-Run the following commands exclusively on the master node:
 
+```bash
 # 1. Initialize the Cluster
 sudo kubeadm init
 
@@ -94,7 +92,7 @@ kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/
 
 # 4. Generate Join Command
 kubeadm token create --print-join-command
-
+```
 ---
 
 ## Execute on ALL of your Worker Node's
