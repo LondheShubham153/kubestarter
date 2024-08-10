@@ -75,7 +75,7 @@ kubectl apply -f apache-deployment.yaml
   - We will create HPA resources for both Apache and NGINX deployments. The HPA will scale the number of pods based on CPU utilization.
 ```bash
 #apache-hpa.yaml
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: apache-hpa
