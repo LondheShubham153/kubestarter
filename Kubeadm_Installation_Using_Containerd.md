@@ -131,6 +131,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 ```bash
 kubectl get nodes
 
+ch![image](https://github.com/user-attachments/assets/c3d3732f-5c99-4a27-a574-86bc7ae5a933)
+
 
 ```
 
