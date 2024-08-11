@@ -101,7 +101,7 @@ sudo mv kubectl /usr/local/bin/
 Now, you can start Minikube with the following command:
 
 ```bash
-minikube start --driver=docker
+minikube start --driver=docker --vm=true 
 ```
 
 This command will start a single-node Kubernetes cluster inside a Docker container.
