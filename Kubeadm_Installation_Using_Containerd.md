@@ -112,7 +112,7 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 1. Perform pre-flight checks:
     ```bash
-    sudo kubeadm reset pre-flight checks
+    sudo kubeadm reset pre-flight checks -y
     ```
 
 2. Paste the join command you got from the master node and append `--v=5` at the end:
