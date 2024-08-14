@@ -117,7 +117,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 2. Paste the join command you got from the master node and append `--v=5` at the end:
     ```bash
-    sudo your-token --v=5
+    sudo kubeadm join <control-plane-ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>   
+    --v=5
     ```
 
    > Use `sudo` before the token.
