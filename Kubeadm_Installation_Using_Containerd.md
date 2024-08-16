@@ -31,6 +31,9 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     overlay
     br_netfilter
     EOF
+
+```
+```bash 
     sudo modprobe overlay
     sudo modprobe br_netfilter
 
