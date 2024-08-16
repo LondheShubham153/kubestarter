@@ -22,11 +22,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 ```bash
    # 1. **Disable Swap**: Required for Kubernetes to function correctly.
-
-
-    sudo swapoff -a
-   
-
+   sudo swapoff -a
+  
    # 2. **Load Necessary Kernel Modules**: Required for Kubernetes networking.
     
     cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
@@ -36,6 +33,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
     sudo modprobe overlay
     sudo modprobe br_netfilter
+```
+```bash
    
    # 3. **Set Sysctl Parameters**: These parameters help with networking .
    
@@ -48,6 +47,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
    sudo sysctl --system
    lsmod | grep br_netfilter
    lsmod | grep overlay
+```
+```bash
     
   # 4. **Install Containerd**: 
      
