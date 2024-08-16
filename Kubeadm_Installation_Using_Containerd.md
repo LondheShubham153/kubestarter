@@ -20,42 +20,37 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 ## Execute on Both "Master" & "Worker" Nodes
 
-  **# 1. Disable Swap:** Required for Kubernetes to function correctly.
+1. **Disable Swap**: Required for Kubernetes to function correctly.
+    ```bash
+    sudo swapoff -a
+    ```
 
-```bash
-   sudo swapoff -a
-```  
-   **# 2. Load Necessary Kernel Modules:** Required for Kubernetes networking.
-```bash    
-    
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-overlay
-br_netfilter
-EOF
+2. **Load Necessary Kernel Modules**: Required for Kubernetes networking.
+    ```bash
+    cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+    overlay
+    br_netfilter
+    EOF
 
-sudo modprobe overlay
-sudo modprobe br_netfilter
+    sudo modprobe overlay
+    sudo modprobe br_netfilter
+    ```
 
-```
+3. **Set Sysctl Parameters**: Helps with networking.
+    ```bash
+    cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+    net.bridge.bridge-nf-call-iptables  = 1
+    net.bridge.bridge-nf-call-ip6tables = 1
+    net.ipv4.ip_forward                 = 1
+    EOF
 
+    sudo sysctl --system
+    lsmod | grep br_netfilter
+    lsmod | grep overlay
+    ```
 
-   
-   # **3. Set Sysctl Parameters:** These parameters help with networking .
- ```bash  
-   cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-   net.bridge.bridge-nf-call-iptables  = 1
-   net.bridge.bridge-nf-call-ip6tables = 1
-   net.ipv4.ip_forward                 = 1
-   EOF
-
-   sudo sysctl --system
-   lsmod | grep br_netfilter
-   lsmod | grep overlay
-```
-
-    
-  # 4. Install Containerd: 
-```bash
+4. **Install Containerd**:
+    ```bash
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -71,11 +66,10 @@ sudo modprobe br_netfilter
 
     sudo systemctl restart containerd
     sudo systemctl status containerd
+    ```
 
-```
-
-  #  5. Install Kubernetes Components:
-```bash
+5. **Install Kubernetes Components**:
+    ```bash
     sudo apt-get update
     sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 
@@ -86,29 +80,31 @@ sudo modprobe br_netfilter
     sudo apt-get update
     sudo apt-get install -y kubelet kubeadm kubectl
     sudo apt-mark hold kubelet kubeadm kubectl
-```
+    ```
 
-## Execute ONLY on "Master Node"
+## Execute ONLY on the "Master" Node
 
-```bash
-# 1. Pull Kubernetes Control Plane Images:
-sudo kubeadm config images pull
+1. **Initialize the Cluster**:
+    ```bash
+    sudo kubeadm init
+    ```
 
-# 2. Initialize the Cluster:
-sudo kubeadm init
+2. **Set Up Local kubeconfig**:
+    ```bash
+    mkdir -p "$HOME"/.kube
+    sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
+    sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
+    ```
 
-# 3.Set Up Local kubeconfig:
-mkdir -p "$HOME"/.kube
-sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
-sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
+3. **Install a Network Plugin (Calico)**:
+    ```bash
+    kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
+    ```
 
-# 4. Install a Network Plugin (Calico):
-kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
-
-# 5. Generate Join Command:
-kubeadm token create --print-join-command
-
-```
+4. **Generate Join Command**:
+    ```bash
+    kubeadm token create --print-join-command
+    ```
 
 ---
 
@@ -146,6 +142,5 @@ kubectl get nodes
 ---
 ## Verify Container Status on Worker Node
 <img src="https://github.com/user-attachments/assets/c3d3732f-5c99-4a27-a574-86bc7ae5a933" width="70%">
-
 
 
