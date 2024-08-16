@@ -30,10 +30,11 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     overlay
     br_netfilter
     EOF
-
     sudo modprobe overlay
     sudo modprobe br_netfilter
+
 ```
+
 ```bash
    
    # 3. **Set Sysctl Parameters**: These parameters help with networking .
