@@ -23,10 +23,10 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 1. **Disable Swap**: Required for Kubernetes to function correctly.
     ```bash
     sudo swapoff -a
-    ```
+   
 
 2. **Load Necessary Kernel Modules**: Required for Kubernetes networking.
-    ```bash
+    
     cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
     overlay
     br_netfilter
@@ -34,10 +34,10 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
     sudo modprobe overlay
     sudo modprobe br_netfilter
-    ```
+   
 
 3. **Set Sysctl Parameters**: Helps with networking.
-    ```bash
+   
     cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
     net.bridge.bridge-nf-call-iptables  = 1
     net.bridge.bridge-nf-call-ip6tables = 1
@@ -47,10 +47,10 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     sudo sysctl --system
     lsmod | grep br_netfilter
     lsmod | grep overlay
-    ```
+    
 
 4. **Install Containerd**:
-    ```bash
+    
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl
     sudo install -m 0755 -d /etc/apt/keyrings
@@ -87,22 +87,22 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 1. **Initialize the Cluster**:
     ```bash
     sudo kubeadm init
-    ```
+   
 
 2. **Set Up Local kubeconfig**:
-    ```bash
+   
     mkdir -p "$HOME"/.kube
     sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
     sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
-    ```
+   
 
 3. **Install a Network Plugin (Calico)**:
-    ```bash
+   
     kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
-    ```
+  
 
 4. **Generate Join Command**:
-    ```bash
+  
     kubeadm token create --print-join-command
     ```
 
