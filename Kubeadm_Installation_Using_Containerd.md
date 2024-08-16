@@ -21,10 +21,10 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 ## Execute on Both "Master" & "Worker" Nodes
 
 ```bash
-   # 1. **Disable Swap**: Required for Kubernetes to function correctly.
+   # 1. Disable Swap: Required for Kubernetes to function correctly.
    sudo swapoff -a
   
-   # 2. **Load Necessary Kernel Modules**: Required for Kubernetes networking.
+   # 2. Load Necessary Kernel Modules: Required for Kubernetes networking.
     
     cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
     overlay
@@ -37,7 +37,7 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 ```bash
    
-   # 3. **Set Sysctl Parameters**: These parameters help with networking .
+   # 3. Set Sysctl Parameters: These parameters help with networking .
    
    cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
    net.bridge.bridge-nf-call-iptables  = 1
@@ -51,7 +51,7 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 ```
 ```bash
     
-  # 4. **Install Containerd**: 
+  # 4. Install Containerd: 
      
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl
@@ -71,7 +71,7 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 ```
 
-  #  5. **Install Kubernetes Components**:
+  #  5. Install Kubernetes Components:
 ```bash
     sudo apt-get update
     sudo apt-get install -y apt-transport-https ca-certificates curl gpg
