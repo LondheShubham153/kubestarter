@@ -27,15 +27,14 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 ```  
    **# 2. Load Necessary Kernel Modules:** Required for Kubernetes networking.
 ```bash    
-    cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-    overlay
-    br_netfilter
-    EOF
+    
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
 
-```
-```bash 
-    sudo modprobe overlay
-    sudo modprobe br_netfilter
+sudo modprobe overlay
+sudo modprobe br_netfilter
 
 ```
 
