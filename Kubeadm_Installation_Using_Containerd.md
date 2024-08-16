@@ -38,7 +38,7 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     sudo modprobe br_netfilter
    
 
-   # 3. **Set Sysctl Parameters**: Helps with networking.
+   # 3. Set Sysctl Parameters: These parameters help with networking
    
     cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
     net.bridge.bridge-nf-call-iptables  = 1
@@ -50,8 +50,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     lsmod | grep br_netfilter
     lsmod | grep overlay
     
-
-   # 4. **Install Containerd**:
+   
+   ## Install Containerd
     
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl
@@ -85,28 +85,25 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-## Execute ONLY on the "Master" Node
+## Execute ONLY on "Master Node"
 
-    1. **Initialize the Cluster**:
 ```bash
-    sudo kubeadm init
-   
+# 1. Pull Kubernetes Control Plane Images:
+sudo kubeadm config images pull
 
-    2. **Set Up Local kubeconfig**:
-   
-    mkdir -p "$HOME"/.kube
-    sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
-    sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
-   
+# 2. Initialize the Cluster:
+sudo kubeadm init
 
-    3. **Install a Network Plugin (Calico)**:
-   
-    kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
-  
+# 3.Set Up Local kubeconfig:
+mkdir -p "$HOME"/.kube
+sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
+sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
 
-    4. **Generate Join Command**:
-  
-    kubeadm token create --print-join-command
+# 4. Install a Network Plugin (Calico):
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.0/manifests/calico.yaml
+
+# 5. Generate Join Command:
+kubeadm token create --print-join-command
 
 ```
 
