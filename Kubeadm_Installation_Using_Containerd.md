@@ -38,7 +38,9 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     sudo modprobe br_netfilter
    
 
-   # 3. Set Sysctl Parameters: These parameters help with networking
+   <!-- 
+   # 3. Set Sysctl Parameters: These parameters help with networking 
+-->
    cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
    net.bridge.bridge-nf-call-iptables  = 1
    net.bridge.bridge-nf-call-ip6tables = 1
@@ -50,7 +52,10 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
    lsmod | grep overlay
     
    
-   ## Install Containerd
+  <!-- 
+    ## Install Containerd 
+-->
+
     
     sudo apt-get update
     sudo apt-get install -y ca-certificates curl
