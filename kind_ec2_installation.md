@@ -122,7 +122,7 @@ Create a Kubernetes Cluster using `kind create cluster`. Use the `--name` flag t
 ![kind node](https://github.com/user-attachments/assets/9a035322-a85f-4a98-8716-6dff777a20a5)
 
 ### Optional: Delete cluster
-Delete a Kubernetes Cluster using `kind delete cluster`. Use the `--name` flag to provide a cluster name. For Example, `kind create cluster --name=<cluster-name>` (Replace `<cluster-name>` with desired cluster name).  
+Delete a Kubernetes Cluster using `kind delete cluster`. Use the `--name` flag to provide a cluster name. For Example, `kind delete cluster --name=<cluster-name>` (Replace `<cluster-name>` with desired cluster name).  
 
 ![kind delete cluster](https://github.com/user-attachments/assets/766629d4-6b99-4ab9-a33f-f3e63e0e7916)
 
