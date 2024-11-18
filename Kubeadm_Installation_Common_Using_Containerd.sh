@@ -57,7 +57,7 @@ containerd config default | sed -e 's/SystemdCgroup = false/SystemdCgroup = true
 sudo systemctl restart containerd
 sleep 2
 
-sudo systemctl status containerd &
+sudo systemctl is-active containerd
 sleep 2
 
 # 5. Install Kubernetes Components:
