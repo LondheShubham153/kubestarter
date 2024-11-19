@@ -1,7 +1,7 @@
 
-# **Installing Kind Cluster on Ubuntu Using Release Binaries**
+# **Installing KIND Cluster on Ubuntu Using Release Binaries**
 
-This guide provides step-by-step instructions for installing **Kind (Kubernetes IN Docker)** on an Ubuntu machine using release binaries. KIND allows you to run a single-node or multi-node Kubernetes cluster locally for development and testing.
+This guide provides step-by-step instructions for installing **KIND (Kubernetes IN Docker)** on an Ubuntu machine using release binaries. KIND allows you to run a single-node or multi-node Kubernetes cluster locally for development and testing.
 
 ---
 
@@ -41,18 +41,20 @@ sudo apt install -y curl wget apt-transport-https
 
 ### Step 3: Install Docker
 
-Kind requires Docker to create and manage the Kubernetes clusters.
+KIND requires Docker to create and manage the Kubernetes clusters.
 
 ```bash
 sudo apt install -y docker.io
 ```
-![image](https://github.com/user-attachments/assets/25219b2d-afc9-43cd-b627-e7f3b862875c)
+![image](https://github.com/user-attachments/assets/c4146d80-e0c5-4259-957f-39f0b6623f95)
+
 
 
 Start and enable Docker
 
 ```bash
 sudo systemctl enable --now docker
+sudo systemctl status docker
 ```
 ![image](https://github.com/user-attachments/assets/f3babbb9-c599-4199-9ec7-73e52802274c)
 
@@ -70,9 +72,9 @@ Now, logout (use exit command) and connect again.
 ---
 
 
-### Step 4: Install and Create a KIND Cluster
+### Step 4: Install and Create a **KIND** Cluster
 
-1. Download the Latest Kind Binary:
+1. Download the Latest KIND Binary:
 
    ```bash
    [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.25.0/kind-linux-amd64
@@ -93,12 +95,13 @@ Now, logout (use exit command) and connect again.
    ```bash
    sudo mv ./kind /usr/local/bin/kind
    ```
-   ![image](https://github.com/user-attachments/assets/023258e7-46be-4d27-9df3-2a17007580b4)
+   ![image](https://github.com/user-attachments/assets/14728c13-0217-4c89-a403-3b3216cb3751)
+
 
 
 4. Verify Installation:
 
-   Check that the installation was successful by verifying the Kind version:
+   Check that the installation was successful by verifying the `KIND` version:
 
    ```bash
    kind --version
@@ -106,7 +109,7 @@ Now, logout (use exit command) and connect again.
    ![image](https://github.com/user-attachments/assets/2da1b0f9-63bc-4379-a184-cc5c992b0e66)
 
 
-5. Create a Kind Cluster and verify status
+5. Create a KIND Cluster and verify status
 
    ```bash
    kind create cluster --name my-cluster
@@ -144,9 +147,7 @@ kubectl version --client --output=yaml
 3. Verify the Install
 
 ```bash
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-kubectl version --client
-kubectl version --client --output=yaml
+kubectl version
 ```
 ![image](https://github.com/user-attachments/assets/24bcb960-7c20-4b84-812f-ac97a0ee2fcb)
 
@@ -161,7 +162,7 @@ kubectl get nodes
 ---
 
 
-## Step 6: Optional: Delete Minikube Cluster
+## Step 6: Optional: Delete KIND Cluster
 
 If you wish to delete the cluster after you're done:
 
