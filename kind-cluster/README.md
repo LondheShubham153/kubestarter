@@ -60,14 +60,9 @@ Use kubectl to interact with the cluster:
 
 kubectl cluster-info
 ```
-## 4. Deleting the Cluster
-Delete the KIND cluster:
-```bash
 
-kind delete cluster --name my-kind-cluster
-```
 
-## 5. Setting Up the Kubernetes Dashboard
+## 4. Setting Up the Kubernetes Dashboard
 Deploy the Dashboard
 Apply the Kubernetes Dashboard manifest:
 ```bash
@@ -127,6 +122,13 @@ Open the Dashboard in your browser:
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
 ```
 Use the token from the previous step to log in.
+
+## 5. Deleting the Cluster
+Delete the KIND cluster:
+```bash
+
+kind delete cluster --name my-kind-cluster
+```
 
 ## 6. Notes
 
