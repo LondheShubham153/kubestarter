@@ -6,7 +6,7 @@ This guide provides step-by-step instructions for installing **KIND (Kubernetes 
 ---
 
 ## Prerequisites
-Before installing Kind, ensure you have the following:
+Before installing KIND Cluster, ensure you have the following:
 
 * Ubuntu OS
 * sudo privileges
