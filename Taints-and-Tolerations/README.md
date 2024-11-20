@@ -14,13 +14,13 @@
 #
 - Taint a node
 ```bash
-kubectl taint nodes node1 key=prod:NoSchedule
+kubectl taint nodes node1 prod=true:NoSchedule
 ```
 <mark>Note</mark>: The above command will taint the node1 with key "prod", without the appropriate tolerations no pods will schedule to node1.
 
 To remove the taint , add - at the end of the command
 ```bash
-kubectl taint nodes node1 key=prod:NoSchedule-
+kubectl taint nodes node1 prod=true:NoSchedule-
 ```
 
 - Try to apply the below manifest
