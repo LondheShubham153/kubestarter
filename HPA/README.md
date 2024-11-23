@@ -16,6 +16,23 @@ minikube addons enable metrics-server
 minikube status
 kubectl get nodes
 ```
+- If you are using a Kind cluster install Metrics Server
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+- Edit the Metrics Server Deployment
+```bash
+kubectl -n kube-system edit deployment metrics-server
+```
+- Restart the deployment
+```bash
+kubectl -n kube-system rollout restart deployment metrics-server
+```
+- Verify if the metrics server is running
+```bash
+kubectl get pods -n kube-system
+kubectl top nodes
+```
 #
 ## What we are going to implement:
 In this demo, we will create an deployment & service files for Apache and with the help of HPA, we will automatically scale the number of pods based on CPU utilization.
@@ -117,12 +134,7 @@ kubectl get hpa
 #
 - To see HPA in action, you can perform a stress test on your deployments. Here is an example of how to generate load on the Apache deployment using 'BusyBox':
 ```bash
-kubectl run -i --tty load-generator --image=busybox /bin/sh
-```
-#
-- Inside the container, use 'wget' to generate load:
-```bash
-while true; do wget -q -O- http://apache-service.default.svc.cluster.local; done
+kubectl run load-generator --image=busybox --restart=Never -- /bin/sh -c "while true; do wget -q -O- http://apache-service.default.svc.cluster.local; done"
 ```
 
 This will generate continuous load on the Apache service, causing the HPA to scale up the number of pods.
