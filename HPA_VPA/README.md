@@ -1,6 +1,6 @@
-# Kubernetes HPA Controller (Horizontal Pod Autoscaler) on Minikube Cluster
+# Kubernetes HPA & VPA Controller (Horizontal/Vertical Pod Autoscaler) on Minikube/KIND Cluster
 
-## In this demo, we will see how to deploy HPA controller. HPA will automatically scale the number of pods based on CPU utilization.
+## In this demo, we will see how to deploy HPA controller. HPA will automatically scale the number of pods based on CPU utilization whereas VPA scales by increasing or decreasing CPU and memory resources within the existing pod containers—thus scaling capacity vertically
 
 
 ### Pre-requisites to implement this project:
@@ -15,6 +15,38 @@ minikube addons enable metrics-server
 ```bash
 minikube status
 kubectl get nodes
+```
+- If you are using a Kind cluster install Metrics Server
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+- Edit the Metrics Server Deployment
+```bash
+kubectl -n kube-system edit deployment metrics-server
+```
+- Add the security bypass to deployment under `container.args`
+```bash
+- --kubelet-insecure-tls
+- --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
+```
+- Restart the deployment
+```bash
+kubectl -n kube-system rollout restart deployment metrics-server
+```
+- Verify if the metrics server is running
+```bash
+kubectl get pods -n kube-system
+kubectl top nodes
+```
+- For VPA
+```bash
+git clone https://github.com/kubernetes/autoscaler.git
+cd autoscaler/vertical-pod-autoscaler
+./hack/vpa-up.sh
+```
+- Verify the pods on VPA
+```bash
+kubectl get pods -n kube-system
 ```
 #
 ## What we are going to implement:

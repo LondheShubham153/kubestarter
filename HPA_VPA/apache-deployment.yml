@@ -1,8 +1,9 @@
-#apache-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: apache-deployment
+  labels:
+    app: apache
 spec:
   replicas: 1
   selector:
@@ -21,13 +22,17 @@ spec:
         resources:
           requests:
             cpu: 100m
+            memory: 128Mi
           limits:
             cpu: 200m
+            memory: 256Mi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: apache-service
+  labels:
+    app: apache
 spec:
   selector:
     app: apache
@@ -36,3 +41,4 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
+

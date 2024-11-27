@@ -162,14 +162,14 @@ You can use the 'kubectl auth can-i' command to verify the permissions granted b
 
 **Test Apache User Permissions:**
 ```bash
-kubectl auth can-i create deployment -n apache-namespace --as=system:serviceaccount:apache-namespace:apache-user
-kubectl auth can-i get pods -n apache-namespace --as=system:serviceaccount:apache-namespace:apache-user
-kubectl auth can-i delete service -n apache-namespace --as=system:serviceaccount:apache-namespace:apache-user
+kubectl auth can-i create deployment -n apache-namespace --as=apache-user
+kubectl auth can-i get pods -n apache-namespace --as=apache-user
+kubectl auth can-i delete service -n apache-namespace --as=apache-user
 ```
 #
 **To test denial of permissions outside the namespace:**
 ```bash
-kubectl auth can-i create deployment -n nginx-namespace --as=system:serviceaccount:apache-namespace:apache-user
+kubectl auth can-i create deployment -n nginx-namespace --as=apache-user
 ```
 #
 ### Create Test Resources
