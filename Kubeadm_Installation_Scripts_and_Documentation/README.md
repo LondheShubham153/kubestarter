@@ -17,7 +17,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 2. Expose port **6443** in the **Security Group** to allow worker nodes to join the cluster.
 3. Expose port **22** in the **Security Group** to allows SSH access to manage the instance..
 
-- To do above setup, follow below provided steps : 
+
+## To do above setup, follow below provided steps : 
 
     ### **Step 1: Identify or Create a Security Group**
     1. **Log in to the AWS Management Console**:
