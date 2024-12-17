@@ -18,44 +18,43 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 3. Expose port **22** in the **Security Group** to allows SSH access to manage the instance..
 
 
-## To do above setup, follow below provided steps : 
+## To do above setup, follow below provided steps
 
-    ### **Step 1: Identify or Create a Security Group**
-    1. **Log in to the AWS Management Console**:
-       - Go to the **EC2 Dashboard**.
+### Step 1: Identify or Create a Security Group
 
-    2. **Locate Security Groups**:
-       - In the left menu under **Network & Security**, click on **Security Groups**.
+1. **Log in to the AWS Management Console**:
+    - Go to the **EC2 Dashboard**.
 
-    3. **Create a New Security Group**:
-       - Click on **Create Security Group**.
-       - Provide the following details:
-         - **Name**: (e.g., `Kubernetes-Cluster-SG`)
-         - **Description**: A brief description for the security group(for creating sg it is mendatory).
-         - **VPC**: Select the appropriate VPC for your instances(you can select default as well).
+2. **Locate Security Groups**:
+    - In the left menu under **Network & Security**, click on **Security Groups**.
 
-    4. **Add Rules to the Security Group**:
-       - **Allow SSH Traffic (Port 22) (for managing the instances)**:
-         - **Type**: SSH
-         - **Port Range**: `22`
-         - **Source**: `0.0.0.0/0` (Anywhere) or restrict it to your IP for better security.
-         
-       - **Allow Kubernetes API Traffic (Port 6443)**:
-         - **Type**: Custom TCP
-         - **Port Range**: `6443`
-         - **Source**: `0.0.0.0/0` (Anywhere) or restrict it to specific IP ranges.
+3. **Create a New Security Group**:
+    - Click on **Create Security Group**.
+    - Provide the following details:
+      - **Name**: (e.g., `Kubernetes-Cluster-SG`)
+      - **Description**: A brief description for the security group (mandatory)
+      - **VPC**: Select the appropriate VPC for your instances (default is acceptable)
 
-    5. **Save the Rules**:
-       - Click on **Create Security Group** to save the settings.
+4. **Add Rules to the Security Group**:
+    - **Allow SSH Traffic (Port 22)**:
+      - **Type**: SSH
+      - **Port Range**: `22`
+      - **Source**: `0.0.0.0/0` (Anywhere) or your specific IP
+    
+    - **Allow Kubernetes API Traffic (Port 6443)**:
+      - **Type**: Custom TCP
+      - **Port Range**: `6443`
+      - **Source**: `0.0.0.0/0` (Anywhere) or specific IP ranges
 
-    ---
+5. **Save the Rules**:
+    - Click on **Create Security Group** to save the settings.
 
-    ### **Step 2: Select the Security Group While Creating Instances**
-    - When launching EC2 instances:
-      - Under **Configure Security Group**, select the existing security group you created (`Kubernetes-Cluster-SG`).
+### Step 2: Select the Security Group While Creating Instances
 
+- When launching EC2 instances:
+  - Under **Configure Security Group**, select the existing security group (`Kubernetes-Cluster-SG`)
 
-> If you want to update security group in future you can update it easily,just google it.
+> Note: Security group settings can be updated later as needed.
 
 ---
 
