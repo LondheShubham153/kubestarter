@@ -13,10 +13,51 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 ## AWS Setup
 
-- Ensure that all instances are in the same **Security Group**.
-- Expose port **6443** in the **Security Group** to allow worker nodes to join the cluster.
+1. Ensure that all instances are in the same **Security Group**.
+2. Expose port **6443** in the **Security Group** to allow worker nodes to join the cluster.
+3. Expose port **22** in the **Security Group** to allows SSH access to manage the instance..
+
+
+## To do above setup, follow below provided steps
+
+### Step 1: Identify or Create a Security Group
+
+1. **Log in to the AWS Management Console**:
+    - Go to the **EC2 Dashboard**.
+
+2. **Locate Security Groups**:
+    - In the left menu under **Network & Security**, click on **Security Groups**.
+
+3. **Create a New Security Group**:
+    - Click on **Create Security Group**.
+    - Provide the following details:
+      - **Name**: (e.g., `Kubernetes-Cluster-SG`)
+      - **Description**: A brief description for the security group (mandatory)
+      - **VPC**: Select the appropriate VPC for your instances (default is acceptable)
+
+4. **Add Rules to the Security Group**:
+    - **Allow SSH Traffic (Port 22)**:
+      - **Type**: SSH
+      - **Port Range**: `22`
+      - **Source**: `0.0.0.0/0` (Anywhere) or your specific IP
+    
+    - **Allow Kubernetes API Traffic (Port 6443)**:
+      - **Type**: Custom TCP
+      - **Port Range**: `6443`
+      - **Source**: `0.0.0.0/0` (Anywhere) or specific IP ranges
+
+5. **Save the Rules**:
+    - Click on **Create Security Group** to save the settings.
+
+### Step 2: Select the Security Group While Creating Instances
+
+- When launching EC2 instances:
+  - Under **Configure Security Group**, select the existing security group (`Kubernetes-Cluster-SG`)
+
+> Note: Security group settings can be updated later as needed.
 
 ---
+
 
 ## Execute on Both "Master" & "Worker" Nodes
 
@@ -106,6 +147,8 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
     kubeadm token create --print-join-command
     ```
 
+> Copy this generated token for next command.
+
 ---
 
 ## Execute on ALL of your Worker Nodes
@@ -117,11 +160,18 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 2. Paste the join command you got from the master node and append `--v=5` at the end:
     ```bash
-    sudo kubeadm join <control-plane-ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> --cri-socket 
+    sudo kubeadm join <private-ip-of-control-plane>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> --cri-socket 
     "unix:///run/containerd/containerd.sock" --v=5
     ```
 
-   > Use `sudo` before the token.
+    > **Note**: When pasting the join command from the master node:
+    > 1. Add `sudo` at the beginning of the command
+    > 2. Add `--v=5` at the end
+    >
+    > Example format:
+    > ```bash
+    > sudo <paste-join-command-here> --v=5
+    > ```
 
 ---
 
@@ -132,14 +182,12 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 ```bash
 kubectl get nodes
 
-
-
-
 ```
 
    <img src="https://raw.githubusercontent.com/faizan35/kubernetes_cluster_with_kubeadm/main/Img/nodes-connected.png" width="70%">
 
 ---
+
 ## Verify Container Status on Worker Node
 <img src="https://github.com/user-attachments/assets/c3d3732f-5c99-4a27-a574-86bc7ae5a933" width="70%">
 
