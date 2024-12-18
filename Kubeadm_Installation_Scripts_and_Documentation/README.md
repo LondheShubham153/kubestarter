@@ -189,6 +189,6 @@ kubectl get nodes
 ---
 
 ## Verify Container Status on Worker Node
-<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/106548243/356852724-c3d3732f-5c99-4a27-a574-86bc7ae5a933.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241217%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241217T113912Z&X-Amz-Expires=300&X-Amz-Signature=7a5a38a006bb504d47ccd2c35a0f6799c03ea7974e9794661a744f866bf3a6ca&X-Amz-SignedHeaders=host" width="70%">
+<img src="https://github.com/user-attachments/assets/c3d3732f-5c99-4a27-a574-86bc7ae5a933" width="70%">
 
 
