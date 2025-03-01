@@ -159,8 +159,8 @@ This guide will help you set up a Kind (Kubernetes in Docker) cluster for the Ea
    
    ```bash
    echo "127.0.0.1 easyshop.local" | sudo tee -a /etc/hosts
-    ```
    ```
+
 ## Verification
 1. Check deployment status
    
