@@ -54,6 +54,58 @@ This guide will help you set up a Kind (Kubernetes in Docker) cluster for the Ea
 >    brew install kubectl
 >    ```
 
+
+## Project dir structure:
+This is just a preview want more details, then use `tree` inside the repo.
+```bash
+.
+├── Dockerfile
+├── Dockerfile.dev
+├── JENKINS.md
+├── Jenkinsfile
+├── LICENSE
+├── README.md
+├── components.json
+├── docker-compose.yml
+├── ecosystem.config.cjs
+├── kubernetes
+│   ├── 00-kind-config.yaml
+│   ├── 01-namespace.yaml
+│   ├── 02-mongodb-pv.yaml
+│   ├── 03-mongodb-pvc.yaml
+│   ├── 04-configmap.yaml
+│   ├── 05-secrets.yaml
+│   ├── 06-mongodb-service.yaml
+│   ├── 07-mongodb-statefulset.yaml
+│   ├── 08-easyshop-deployment.yaml
+│   ├── 09-easyshop-service.yaml
+│   ├── 10-ingress.yaml
+│   ├── 11-hpa.yaml
+│   └── 12-migration-job.yaml
+├── next.config.cjs
+├── next.config.js
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+├── scripts
+│   ├── Dockerfile.migration
+│   ├── migrate-data.ts
+│   └── tsconfig.json
+├── src
+│   ├── app
+│   ├── data
+│   ├── lib
+│   ├── middleware.ts
+│   ├── styles
+│   ├── types
+│   └── types.d.ts
+├── tailwind.config.ts
+├── tsconfig.json
+└── yarn.lock
+```
+
+
 ## 🛠️ Environment Setup
 
 > ### 1. Clone the repository and navigate to the project directory   
@@ -112,63 +164,54 @@ This guide will help you set up a Kind (Kubernetes in Docker) cluster for the Ea
    
    ```bash
    kind create cluster --name easyshop --config kubernetes/kind-config.yaml
-    ```
-
-   
+   ```
    This command creates a new Kind cluster using our custom configuration with one control plane and two worker nodes.
-3. Install NGINX Ingress Controller
    
-   ```bash
-   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-    ```
+2.  Create namespace
+```zsh
+kubectl apply -f kubernetes/01-namespace.yaml
+```
+
+3.  Setup storage
+```zsh
+kubectl apply -f kubernetes/02-mongodb-pv.yaml
+kubectl apply -f kubernetes/03-mongodb-pvc.yaml
+```
+
+4.  Setup configuration
+```zsh
+kubectl apply -f kubernetes/04-configmap.yaml
+kubectl apply -f kubernetes/05-secrets.yaml
+```
+5.  Deploy MongoDB
+```zsh
+kubectl apply -f kubernetes/06-mongodb-service.yaml
+kubectl apply -f kubernetes/07-mongodb-statefulset.yaml
+```
+
+6. Deploy EasyShop
+```zsh
+kubectl apply -f kubernetes/08-easyshop-deployment.yaml
+kubectl apply -f kubernetes/09-easyshop-service.yaml
+```
+
+7. Install NGINX Ingress Controller
    
-   Wait for the ingress controller to be ready:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+```
    
-   ```bash
+8. Wait for the ingress controller to be ready:
+```bash
    kubectl wait --namespace ingress-nginx \
      --for=condition=ready pod \
      --selector=app.kubernetes.io/component=controller \
      --timeout=90s
-    ```
-4. Apply Kubernetes manifests
-   
-   ```bash
-   # Create namespace
-   kubectl apply -f kubernetes/namespace.yaml
-   
-   # Setup storage
-   kubectl apply -f kubernetes/storage-class.yaml
-   kubectl apply -f kubernetes/mongodb-pv.yaml
-   kubectl apply -f kubernetes/mongodb-pvc.yaml
-   
-   # Deploy MongoDB
-   kubectl apply -f kubernetes/mongodb-service.yaml
-   kubectl apply -f kubernetes/mongodb-statefulset.yaml
-   
-   # Wait for MongoDB to be ready
-   kubectl wait --namespace easyshop \
-     --for=condition=ready pod \
-     --selector=app=mongodb \
-     --timeout=90s
-    ```
-5. Load required images
-   
-   ```bash
-   # Pull images
-   docker pull iemafzal/easyshop:latest
-   docker pull iemafzal/easyshop-migration:latest
-    ```
-6. Deploy application
-   
-   ```bash
-   # Apply ConfigMap
-   kubectl apply -f kubernetes/configmap.yaml
-   
-   # Run database migration
-   kubectl apply -f kubernetes/migration-job.yaml
-   
-   # Deploy application
-   kubectl apply -f kubernetes/app-service.yaml
+```
+9.  Deploy Ingress and HPA
+```zsh
+kubectl apply -f kubernetes/10-ingress.yaml
+kubectl apply -f kubernetes/11-hpa.yaml
 ```
 
 ## 🚀 Application Deployment
@@ -347,8 +390,8 @@ spec:
 ## Accessing the Application
 The application should now be accessible at:
 
-- http://localhost
-- http://easyshop.local
+- http://<public-ip>.nip.io
+
 ## Troubleshooting
 1. If pods are not starting, check logs:
    
