@@ -10,7 +10,7 @@ Install KIND and kubectl using the provided script:
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 
-VERSION="v1.30.0"
+VERSION="v1.31.0"
 URL="https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
 INSTALL_DIR="/usr/local/bin"
 
