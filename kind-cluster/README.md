@@ -8,7 +8,7 @@ Install KIND and kubectl using the provided script:
 
 [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
 chmod +x ./kind
-sudo cp ./kind /usr/local/bin/kind
+sudo mv ./kind /usr/local/bin/kind
 
 VERSION="v1.30.0"
 URL="https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
