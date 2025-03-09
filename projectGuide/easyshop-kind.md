@@ -367,8 +367,32 @@ This is just a preview want more details, then use `tree` inside the repo.
     ```
 ## Accessing the Application
 The application should now be accessible at:
+> [!WARNING]
+> - http://`<public-ip>`.nip.io
+>
+>  
+> `nip.io` is a free wildcard DNS service that automatically maps any subdomain to the corresponding IP address.
 
-- http://<public-ip>.nip.io
+> [!NOTE] 
+> - If you access `http://203.0.113.10.nip.io`, it resolves to `203.0.113.10`.
+> - If you use `app.203.0.113.10.nip.io`, it still resolves to `203.0.113.10`.
+>
+> **Why Use `nip.io`?**  
+> - **Simplifies local and remote testing:** No need to set up custom DNS records.  
+> - **Useful for Kubernetes Ingress:** You can access services using public IP-based domains.  
+> - **Great for temporary or dynamic environments:** Works with CI/CD pipelines, cloud VMs, and local testing.  
+>
+> **Who Provides This Service?**  
+> - `nip.io` is an **open-source project maintained by Vincent Bernat**.  
+> - It is provided **for free**, with no registration required.  
+> - The service works by dynamically resolving any subdomain containing an IP address.
+> 
+> **More details:** [https://nip.io](https://nip.io)
+
+
+
+
+
 
 ## Troubleshooting
 1. If pods are not starting, check logs:
