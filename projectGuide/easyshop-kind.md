@@ -110,12 +110,59 @@ This is just a preview want more details, then use `tree` inside the repo.
 
 > ### 1. Clone the repository and navigate to the project directory   
 >   ```bash
->   git clone https://github.com/your-username/EasyShop.git
+>   git clone https://github.com/iemafzalhassan/EasyShop.git
 >   cd EasyShop
 >   ```
 
-> ### 2. Create ConfigMap
-> Create `kubernetes/configmap.yaml` with the following content:
+> ### 2. Build and Push Docker Images
+> 
+> #### 2.1 Login to Docker Hub
+> First, login to Docker Hub (create an account at [hub.docker.com](https://hub.docker.com) if you haven't):
+>    ```bash
+>    docker login
+>    ```
+>
+> #### 2.2 Build Application Image
+>    ```bash
+>    # Build the application image
+>    docker build -t your-dockerhub-username/easyshop:latest .
+> 
+>    # Push to Docker Hub
+>    docker push your-dockerhub-username/easyshop:latest
+>    ```
+>
+> #### 2.3 Build Migration Image
+>    ```bash
+>    # Build the migration image
+>    docker build -t your-dockerhub-username/easyshop-migration:latest -f Dockerfile.migration .
+> 
+>    # Push to Docker Hub
+>    docker push your-dockerhub-username/easyshop-migration:latest
+>    ```
+
+
+## Kind Cluster Setup
+
+> ##### 3. Create new cluster
+>   
+>   ```bash
+>   kind create cluster --name easyshop --config kubernetes/00-kind-config.yaml
+>   ```
+>   This command creates a new Kind cluster using our custom configuration with one control plane and two worker nodes.
+   
+> ##### 4.  Create namespace
+>   ```zsh
+>   kubectl apply -f kubernetes/01-namespace.yaml
+>   ```
+
+> ##### 5.  Setup storage
+>   ```zsh
+>   kubectl apply -f kubernetes/02-mongodb-pv.yaml
+>   kubectl apply -f kubernetes/03-mongodb-pvc.yaml
+>   ```
+
+> ### 5. Create ConfigMap
+> Create `kubernetes/04-configmap.yaml` with the following content:
 >   ```yaml
 >   apiVersion: v1
 >   kind: ConfigMap
@@ -125,92 +172,31 @@ This is just a preview want more details, then use `tree` inside the repo.
 >   data:
 >     MONGODB_URI: "mongodb://mongodb-service:27017/easyshop"
 >     NODE_ENV: "production"
->     NEXT_PUBLIC_API_URL: "http://YOUR_EC2_PUBLIC_IP/api"  # Replace YOUR_EC2_PUBLIC_IP
->     NEXTAUTH_URL: "http://YOUR_EC2_PUBLIC_IP"             # Replace YOUR_EC2_PUBLIC_IP
+>     NEXT_PUBLIC_API_URL: "http://YOUR_EC2_PUBLIC_IP/api"  # Replace with your YOUR_EC2_PUBLIC_IP
+>     NEXTAUTH_URL: "http://YOUR_EC2_PUBLIC_IP"             # Replace with your YOUR_EC2_PUBLIC_IP
 >     NEXTAUTH_SECRET: "HmaFjYZ2jbUK7Ef+wZrBiJei4ZNGBAJ5IdiOGAyQegw="
 >     JWT_SECRET: "e5e425764a34a2117ec2028bd53d6f1388e7b90aeae9fa7735f2469ea3a6cc8c"
 >   ```
+>   
+>    ```zsh
+>       kubectl apply -f kubernetes/04-configmap.yaml
+>    ```
 
-> ### 3. Build and Push Docker Images
-> 
-> #### 3.1 Login to Docker Hub
-> First, login to Docker Hub (create an account at [hub.docker.com](https://hub.docker.com) if you haven't):
-> ```bash
-> docker login
-> ```
->
-> #### 3.2 Build Application Image
-> ```bash
-> # Build the application image
-> docker build -t your-dockerhub-username/easyshop:latest .
-> 
-> # Push to Docker Hub
-> docker push your-dockerhub-username/easyshop:latest
-> ```
->
-> #### 3.3 Build Migration Image
-> ```bash
-> # Build the migration image
-> docker build -t your-dockerhub-username/easyshop-migration:latest -f Dockerfile.migration .
-> 
-> # Push to Docker Hub
-> docker push your-dockerhub-username/easyshop-migration:latest
+
+> ##### 6.  Setup configuration
+> ```zsh
+> kubectl apply -f kubernetes/05-secrets.yaml
 > ```
 
-
-## Kind Cluster Setup
-
-1. Create new cluster
-   
-   ```bash
-   kind create cluster --name easyshop --config kubernetes/kind-config.yaml
-   ```
-   This command creates a new Kind cluster using our custom configuration with one control plane and two worker nodes.
-   
-2.  Create namespace
-```zsh
-kubectl apply -f kubernetes/01-namespace.yaml
-```
-
-3.  Setup storage
-```zsh
-kubectl apply -f kubernetes/02-mongodb-pv.yaml
-kubectl apply -f kubernetes/03-mongodb-pvc.yaml
-```
-
-4.  Setup configuration
-```zsh
-kubectl apply -f kubernetes/04-configmap.yaml
-
-## This is the configmap manifest.
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: easyshop-config
-  namespace: easyshop
-data:
-  MONGODB_URI: "mongodb://mongodb-service:27017/easyshop"
-  NODE_ENV: "production"
-  NEXT_PUBLIC_API_URL: "http://51.20.251.235/api"   # Update this line with your public IP of EC2.
-  NEXTAUTH_URL: "http://51.20.251.235"    # Update this line with your public IP of EC2.
-  NEXTAUTH_SECRET: "HmaFjYZ2jbUK7Ef+wZrBiJei4ZNGBAJ5IdiOGAyQegw="
-  JWT_SECRET: "e5e425764a34a2117ec2028bd53d6f1388e7b90aeae9fa7735f2469ea3a6cc8c"
-```
-
-```zsh
-kubectl apply -f kubernetes/05-secrets.yaml
-```
-
->5.  Deploy MongoDB
+> ##### 7.  Deploy MongoDB
 >```zsh
 >kubectl apply -f kubernetes/06-mongodb-service.yaml
 >kubectl apply -f kubernetes/07-mongodb-statefulset.yaml
 >```
 
-6. Deploy EasyShop
-###### Create or update `kubernetes/app-deployment.yaml`:
->```yaml
+##### 8. Deploy EasyShop
+###### Create or update `kubernetes/08easyshop-deployment.yaml`:
+>   ```yaml
 >apiVersion: apps/v1
 >kind: Deployment
 >metadata:
@@ -278,67 +264,33 @@ kubectl apply -f kubernetes/05-secrets.yaml
 >              port: 3000
 >            initialDelaySeconds: 25
 >            periodSeconds: 20
->```
+>   ```
 
-```zsh
-kubectl apply -f kubernetes/08-easyshop-deployment.yaml
-```
+>    ```zsh
+>    kubectl apply -f kubernetes/08-easyshop-deployment.yaml
+>    ```
+>
+>    ```zsh
+>    kubectl apply -f kubernetes/09-easyshop-service.yaml
+>    ```
 
-
-
-##
-
-kubectl apply -f kubernetes/09-easyshop-service.yaml
-```
-
-7. Install NGINX Ingress Controller
+>  ##### 7. Install NGINX Ingress Controller
+>   
+>   ```bash
+>   kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+>   ```
    
-```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-```
-   
-8. Wait for the ingress controller to be ready:
-```bash
-   kubectl wait --namespace ingress-nginx \
-     --for=condition=ready pod \
-     --selector=app.kubernetes.io/component=controller \
-     --timeout=90s
-```
-9.  Deploy Ingress and HPA
-```zsh
-kubectl apply -f kubernetes/10-ingress.yaml
-kubectl apply -f kubernetes/11-hpa.yaml
-```
+> ##### 8. Wait for the ingress controller to be ready:
+>   ```bash
+>   kubectl wait --namespace ingress-nginx \
+>     --for=condition=ready pod \
+>     --selector=app.kubernetes.io/component=controller \
+>     --timeout=90s
+>   ```
 
-## 🚀 Application Deployment
 
-### 1. Update Deployment Manifest
-
-```
-
-> ### 2. Update Migration Job
-> Create or update `kubernetes/migration-job.yaml`:
-> ```yaml
-> apiVersion: batch/v1
-> kind: Job
-> metadata:
->   name: db-migration
->   namespace: easyshop
-> spec:
->   template:
->     spec:
->       containers:
->       - name: migration
->         image: iemafzal/easyshop-migration:latest
->         imagePullPolicy: Always
->         env:
->         - name: MONGODB_URI
->           value: "mongodb://mongodb-service:27017/easyshop"
->       restartPolicy: OnFailure
-> ```
-
-> ### 3. Update Ingress Configuration
-> Create or update `kubernetes/ingress.yaml`:
+> ##### 9.  Deploy Ingress and HPA
+> ###### Create or update `kubernetes/09-ingress.yaml`:
 > ```yaml
 > apiVersion: networking.k8s.io/v1
 > kind: Ingress
@@ -361,33 +313,36 @@ kubectl apply -f kubernetes/11-hpa.yaml
 >             port:
 >               number: 80
 > ```
+>   ```zsh
+>      kubectl apply -f kubernetes/10-ingress.yaml
+>      kubectl apply -f kubernetes/11-hpa.yaml
+>   ```
 
-> ### 4. Apply the Configurations
-> ```bash
-> # Apply all configurations
-> kubectl apply -f kubernetes/app-deployment.yaml
-> kubectl apply -f kubernetes/migration-job.yaml
-> kubectl apply -f kubernetes/ingress.yaml
-> 
-> # Verify the deployment
-> kubectl get pods -n easyshop
-> kubectl get ingress -n easyshop
+> ##### 10. Update Migration Job
+> ###### Create or update `kubernetes/12-migration-job.yaml`:
+> ```yaml
+> apiVersion: batch/v1
+> kind: Job
+> metadata:
+>   name: db-migration
+>   namespace: easyshop
+> spec:
+>   template:
+>     spec:
+>       containers:
+>       - name: migration
+>         image: iemafzal/easyshop-migration:latest  # update with the name that you have build.
+>         imagePullPolicy: Always
+>         env:
+>         - name: MONGODB_URI
+>           value: "mongodb://mongodb-service:27017/easyshop"
+>       restartPolicy: OnFailure
 > ```
 
-```bash   
-   # Apply ConfigMap
-   kubectl apply -f kubernetes/configmap.yaml
-```
-```bash
-   # Run database migration
-   kubectl apply -f kubernetes/migration-job.yaml
-```
-```bash
-   # Deploy application
-   kubectl apply -f kubernetes/app-service.yaml
-   kubectl apply -f kubernetes/app-deployment.yaml
-   kubectl apply -f kubernetes/ingress.yaml
-```
+>   ```bash
+>      # Run database migration
+>      kubectl apply -f kubernetes/migration-job.yaml
+>   ```
 
 ## Verification
 1. Check deployment status
