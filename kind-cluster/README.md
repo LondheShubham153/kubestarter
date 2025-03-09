@@ -123,6 +123,15 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 ```
 Use the token from the previous step to log in.
 
+> If this does not work, then
+
+```bash
+kubectl get svc -n kubernetes-dashboard
+kubectl port-forward svc/kubernetes-dashboard -n kubernetes-dashboard 8443:443 --address=0.0.0.0 &
+```
+
+You can access the Kubernetes Dashboard at `https://your-ip:8443`. Paste your token and advance to Kubernetes Dashboard. Make sure you click on the Advance option, which you do `https`.
+
 ## 5. Deleting the Cluster
 Delete the KIND cluster:
 ```bash
@@ -132,7 +141,7 @@ kind delete cluster --name my-kind-cluster
 
 ## 6. Notes
 
-Multiple Clusters: KIND supports multiple clusters. Use unique --name for each cluster.
+Multiple Clusters: KIND supports multiple clusters. Use a unique name for each cluster. Using --name
 Custom Node Images: Specify Kubernetes versions by updating the image in the configuration file.
 Ephemeral Clusters: KIND clusters are temporary and will be lost if Docker is restarted.
 
