@@ -29,7 +29,7 @@ This guide will help you set up a Kind (Kubernetes in Docker) cluster for the Ea
 >    ```
 > 2. Install Kind
 >    ```bash
->    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+>    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
 >    chmod +x ./kind
 >    sudo mv ./kind /usr/local/bin/kind
 >    ```
