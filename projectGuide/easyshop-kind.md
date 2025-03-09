@@ -181,17 +181,113 @@ kubectl apply -f kubernetes/03-mongodb-pvc.yaml
 4.  Setup configuration
 ```zsh
 kubectl apply -f kubernetes/04-configmap.yaml
-kubectl apply -f kubernetes/05-secrets.yaml
-```
-5.  Deploy MongoDB
-```zsh
-kubectl apply -f kubernetes/06-mongodb-service.yaml
-kubectl apply -f kubernetes/07-mongodb-statefulset.yaml
+
+## This is the configmap manifest.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: easyshop-config
+  namespace: easyshop
+data:
+  MONGODB_URI: "mongodb://mongodb-service:27017/easyshop"
+  NODE_ENV: "production"
+  NEXT_PUBLIC_API_URL: "http://51.20.251.235/api"   # Update this line with your public IP of EC2.
+  NEXTAUTH_URL: "http://51.20.251.235"    # Update this line with your public IP of EC2.
+  NEXTAUTH_SECRET: "HmaFjYZ2jbUK7Ef+wZrBiJei4ZNGBAJ5IdiOGAyQegw="
+  JWT_SECRET: "e5e425764a34a2117ec2028bd53d6f1388e7b90aeae9fa7735f2469ea3a6cc8c"
 ```
 
+```zsh
+kubectl apply -f kubernetes/05-secrets.yaml
+```
+
+>5.  Deploy MongoDB
+>```zsh
+>kubectl apply -f kubernetes/06-mongodb-service.yaml
+>kubectl apply -f kubernetes/07-mongodb-statefulset.yaml
+>```
+
 6. Deploy EasyShop
+###### Create or update `kubernetes/app-deployment.yaml`:
+>```yaml
+>apiVersion: apps/v1
+>kind: Deployment
+>metadata:
+>  name: easyshop
+>  namespace: easyshop
+>spec:
+>  replicas: 2
+>  selector:
+>    matchLabels:
+>      app: easyshop
+>  template:
+>    metadata:
+>      labels:
+>       app: easyshop
+>    spec:
+>      containers:
+>        - name: easyshop
+>          image: iemafzal/easyshop:latest
+>          imagePullPolicy: Always
+>          ports:
+>            - containerPort: 3000
+>          envFrom:
+>            - configMapRef:
+>                name: easyshop-config
+>            - secretRef:
+>                name: easyshop-secrets
+>         env:
+>           - name: NEXTAUTH_URL
+>             valueFrom:
+>                configMapKeyRef:
+>                  name: easyshop-config
+>                  key: NEXTAUTH_URL
+>            - name: NEXTAUTH_SECRET
+>              valueFrom:
+>                secretKeyRef:
+>                  name: easyshop-secrets
+>                  key: NEXTAUTH_SECRET
+>            - name: JWT_SECRET
+>              valueFrom:
+>                secretKeyRef:
+>                 name: easyshop-secrets
+>                  key: JWT_SECRET
+>          resources:
+>            requests:
+>              memory: "256Mi"
+>              cpu: "200m"
+>            limits:
+>              memory: "512Mi"
+>              cpu: "500m"
+>          startupProbe:
+>            httpGet:
+>              path: /
+>              port: 3000
+>            failureThreshold: 30
+>            periodSeconds: 10
+>          readinessProbe:
+>            httpGet:
+>              path: /
+>              port: 3000
+>            initialDelaySeconds: 20
+>            periodSeconds: 15
+>          livenessProbe:
+>            httpGet:
+>              path: /
+>              port: 3000
+>            initialDelaySeconds: 25
+>            periodSeconds: 20
+>```
+
 ```zsh
 kubectl apply -f kubernetes/08-easyshop-deployment.yaml
+```
+
+
+
+##
+
 kubectl apply -f kubernetes/09-easyshop-service.yaml
 ```
 
@@ -217,75 +313,7 @@ kubectl apply -f kubernetes/11-hpa.yaml
 ## 🚀 Application Deployment
 
 ### 1. Update Deployment Manifest
-Create or update `kubernetes/app-deployment.yaml`:
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: easyshop
-  namespace: easyshop
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: easyshop
-  template:
-    metadata:
-      labels:
-        app: easyshop
-    spec:
-      containers:
-        - name: easyshop
-          image: iemafzal/easyshop:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 3000
-          envFrom:
-            - configMapRef:
-                name: easyshop-config
-            - secretRef:
-                name: easyshop-secrets
-          env:
-            - name: NEXTAUTH_URL
-              valueFrom:
-                configMapKeyRef:
-                  name: easyshop-config
-                  key: NEXTAUTH_URL
-            - name: NEXTAUTH_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: easyshop-secrets
-                  key: NEXTAUTH_SECRET
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: easyshop-secrets
-                  key: JWT_SECRET
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "200m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          startupProbe:
-            httpGet:
-              path: /
-              port: 3000
-            failureThreshold: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 20
-            periodSeconds: 15
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 3000
-            initialDelaySeconds: 25
-            periodSeconds: 20
+
 ```
 
 > ### 2. Update Migration Job
@@ -360,11 +388,6 @@ spec:
    kubectl apply -f kubernetes/app-deployment.yaml
    kubectl apply -f kubernetes/ingress.yaml
 ```
-7. Configure local DNS (requires admin/root privileges)
-   
-   ```bash
-   echo "127.0.0.1 easyshop.local" | sudo tee -a /etc/hosts
-   ```
 
 ## Verification
 1. Check deployment status
