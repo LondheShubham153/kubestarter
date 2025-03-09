@@ -290,7 +290,7 @@ This is just a preview want more details, then use `tree` inside the repo.
 
 
 > ##### 9.  Deploy Ingress and HPA
-> ###### Create or update `kubernetes/09-ingress.yaml`:
+> ###### Create or update `kubernetes/10-ingress.yaml`:
 > ```yaml
 > apiVersion: networking.k8s.io/v1
 > kind: Ingress
