@@ -19,8 +19,6 @@ chmod +x kubectl
 sudo mv kubectl $INSTALL_DIR/
 kubectl version --client
 
-rm -f kubectl
-rm -rf kind
 
 echo "kind & kubectl installation complete."
 ```
