@@ -112,6 +112,7 @@ This is just a preview want more details, then use `tree` inside the repo.
 >   ```bash
 >   git clone https://github.com/iemafzalhassan/EasyShop.git
 >   cd EasyShop
+>   git checkout DevOps
 >   ```
 
 > ### 2. Build and Push Docker Images
