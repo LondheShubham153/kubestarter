@@ -110,7 +110,7 @@ This is just a preview want more details, then use `tree` inside the repo.
 
 > ### 1. Clone the repository and navigate to the project directory   
 >   ```bash
->   git clone https://github.com/iemafzalhassan/EasyShop.git
+>   git clone https://github.com/iemafzalhassan/easyshop--demo.git
 >   cd EasyShop
 >   ```
 
