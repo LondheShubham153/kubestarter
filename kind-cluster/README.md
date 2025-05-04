@@ -113,7 +113,7 @@ Start the Dashboard using kubectl proxy:
 
 ```bash
 
-kubectl proxy
+kubectl proxy --port=8001 --address=0.0.0.0 --accept-hosts='.*'
 ```
 Open the Dashboard in your browser:
 
