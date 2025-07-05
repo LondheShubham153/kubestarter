@@ -1,5 +1,9 @@
 ## Kubernetes Kickstarter
 
+### Kubernetes In One Shot
+
+Learn Kubernetes concepts in a 12 hour tutorial by TrainWithShubham [here](https://youtu.be/W04brGNgxN4?si=KuUs-ajJOE7TfYs-)
+
 ## Architecture Guides
 
 1. [Kubernetes Architecture Guide](./kubernetes_architecture.md)
