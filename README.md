@@ -19,6 +19,9 @@ Learn Kubernetes concepts in a 12 hour tutorial by TrainWithShubham [here](https
 2. [Minikube Installation Guide](./minikube_installation.md)
 3. [EKS Installation Guide](./eks_cluster_setup.md)
 
+## Kubernetes Concepts Covered in this Repository:
+1. 
+
 ## Practice Projects
 
 1. [Microservices on k8s](https://github.com/LondheShubham153/microservices-k8s)
