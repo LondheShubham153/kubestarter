@@ -1,29 +1,7 @@
 # KIND Cluster Setup Guide
 
 ## 1. Installing KIND and kubectl
-Install KIND and kubectl using the provided script:
-```bash
-
-#!/bin/bash
-
-[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
-chmod +x ./kind
-sudo mv ./kind /usr/local/bin/kind
-
-VERSION="v1.30.0"
-URL="https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
-INSTALL_DIR="/usr/local/bin"
-
-curl -LO "$URL"
-chmod +x kubectl
-sudo mv kubectl $INSTALL_DIR/
-kubectl version --client
-
-rm -f kubectl
-rm -rf kind
-
-echo "kind & kubectl installation complete."
-```
+Install KIND and kubectl using the provided (script)[https://github.com/LondheShubham153/kubestarter/blob/main/kind-cluster/install.sh]:
 
 ## 2. Setting Up the KIND Cluster
 Create a kind-cluster-config.yaml file:
