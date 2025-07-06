@@ -71,6 +71,11 @@
 
 - You have successfully accessed the `online_shop with footer` webpage. Now edit the deployment file: `recreate-deployment.yml` and change the image from <b>`online_shop`</b> to <b>`online_shop_without_footer`</b> and apply.
 
+or
+    ```bash
+    kubectl set image deployment/online-shop online-shop=amitabhdevops/online_shop_without_footer -n recreate-ns
+    
+```
     ```bash
     kubectl apply -f . 
     ```
