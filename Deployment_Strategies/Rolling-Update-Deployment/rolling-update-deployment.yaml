@@ -11,7 +11,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1             # Optional - 1 extra Pod can be created during update
-      maxUnavailable: 1       # Optional - 1 Pod can be unavailable during update
+      maxUnavailable: 0       # Optional - 0 unavailable Pods ensure 0 Downtime
   selector:
     matchLabels:
       app: online-shop
