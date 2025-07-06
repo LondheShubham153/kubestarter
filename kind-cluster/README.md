@@ -10,20 +10,19 @@ Create a kind-cluster-config.yaml file:
 
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-
 nodes:
-- role: control-plane
-  image: kindest/node:v1.31.2
-- role: worker
-  image: kindest/node:v1.31.2
-- role: worker
-  image: kindest/node:v1.31.2
+  - role: control-plane
+    image: kindest/node:v1.33.1
+  - role: worker
+    image: kindest/node:v1.33.1
+  - role: worker
+    image: kindest/node:v1.33.1
 ```
 Create the cluster using the configuration file:
 
 ```bash
 
-kind create cluster --config kind-cluster-config.yaml --name my-kind-cluster
+kind create cluster --config kind-cluster-config.yaml --name tws-kind-cluster
 ```
 Verify the cluster:
 
