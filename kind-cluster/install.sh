@@ -1,24 +1,72 @@
 #!/bin/bash
 
-# For AMD64 / x86_64
+set -e  # Exit immediately if a command exits with a non-zero status
+set -o pipefail
 
-[ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
-chmod +x ./kind
-sudo cp ./kind /usr/local/bin/kind
+echo "🚀 Starting installation of Docker, Kind, and kubectl..."
 
+# ----------------------------
+# 1. Install Docker
+# ----------------------------
+if ! command -v docker &>/dev/null; then
+  echo "📦 Installing Docker..."
+  sudo apt-get update -y
+  sudo apt-get install -y docker.io
 
-VERSION="v1.30.0"
-URL="https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
-INSTALL_DIR="/usr/local/bin"
+  echo "👤 Adding current user to docker group..."
+  sudo usermod -aG docker "$USER"
 
-# Download and install kubectl
-curl -LO "$URL"
-chmod +x kubectl
-sudo mv kubectl $INSTALL_DIR/
-kubectl version --client
+  echo "✅ Docker installed and user added to docker group."
+else
+  echo "✅ Docker is already installed."
+fi
 
-# Clean up
-rm -f kubectl
-rm -rf kind
+# ----------------------------
+# 2. Install Kind (based on architecture)
+# ----------------------------
+if ! command -v kind &>/dev/null; then
+  echo "📦 Installing Kind..."
 
-echo "kind & kubectl installation complete."
+  ARCH=$(uname -m)
+  if [ "$ARCH" = "x86_64" ]; then
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
+  elif [ "$ARCH" = "aarch64" ]; then
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64
+  else
+    echo "❌ Unsupported architecture: $ARCH"
+    exit 1
+  fi
+
+  chmod +x ./kind
+  sudo mv ./kind /usr/local/bin/kind
+  echo "✅ Kind installed successfully."
+else
+  echo "✅ Kind is already installed."
+fi
+
+# ----------------------------
+# 3. Install kubectl (latest stable)
+# ----------------------------
+if ! command -v kubectl &>/dev/null; then
+  echo "📦 Installing kubectl (latest stable version)..."
+
+  curl -LO "https://dl.k8s.io/release/$(curl -Ls https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+  rm -f kubectl
+
+  echo "✅ kubectl installed successfully."
+else
+  echo "✅ kubectl is already installed."
+fi
+
+# ----------------------------
+# 4. Confirm Versions
+# ----------------------------
+echo
+echo "🔍 Installed Versions:"
+docker --version
+kind --version
+kubectl version --client --output=yaml
+
+echo
+echo "🎉 Docker, Kind, and kubectl installation complete!"
