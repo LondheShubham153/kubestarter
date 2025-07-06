@@ -9,6 +9,9 @@ spec:
   replicas: 4
   strategy:
     type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1             # Optional - 1 extra Pod can be created during update
+      maxUnavailable: 1       # Optional - 1 Pod can be unavailable during update
   selector:
     matchLabels:
       app: online-shop
@@ -18,13 +21,12 @@ spec:
         app: online-shop
     spec:
       containers:
-      - image: amitabhdevops/online_shop
-        name: online-shop
+      - name: online-shop
+        image: amitabhdevops/online_shop
         resources:
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
           requests:
             cpu: "200m"
             memory: "256Mi"
-
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
