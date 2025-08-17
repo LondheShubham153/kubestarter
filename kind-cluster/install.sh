@@ -5,6 +5,9 @@ set -o pipefail
 
 echo "🚀 Starting installation of Docker, Kind, and kubectl..."
 
+OS=$(uname -s)
+ARCH=$(uname -m)
+
 # ----------------------------
 # 1. Install Docker
 # ----------------------------
@@ -26,14 +29,26 @@ fi
 # ----------------------------
 if ! command -v kind &>/dev/null; then
   echo "📦 Installing Kind..."
-
-  ARCH=$(uname -m)
-  if [ "$ARCH" = "x86_64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
-  elif [ "$ARCH" = "aarch64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64
+  if [ "$OS" = "Linux" ]; then
+    if [ "$ARCH" = "x86_64" ]; then
+      curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
+    elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+      curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64
+    else
+      echo "❌ Unsupported Linux architecture: $ARCH"
+      exit 1
+    fi
+  elif [ "$OS" = "Darwin" ]; then
+    if [ "$ARCH" = "x86_64" ]; then
+      curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-darwin-amd64
+    elif [ "$ARCH" = "arm64" ]; then
+      curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-darwin-arm64
+    else
+      echo "❌ Unsupported macOS architecture: $ARCH"
+      exit 1
+    fi
   else
-    echo "❌ Unsupported architecture: $ARCH"
+    echo "❌ Unsupported OS: $OS"
     exit 1
   fi
 
