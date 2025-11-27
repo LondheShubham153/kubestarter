@@ -7,3 +7,10 @@ nodes:
     image: kindest/node:v1.33.1
   - role: worker
     image: kindest/node:v1.33.1
+    extraPortMappings:
+    - containerPort: #http port
+      hostPort:
+      protocol: #default TCP
+    - containerPort: #ssh port
+      hostPort:
+      protocol: #default TCP
