@@ -11,7 +11,7 @@ This guide will help you set up a Kind (Kubernetes in Docker) cluster for the Ea
 >    ```
 > 2. Install Kind
 >    ```powershell
->    curl.exe -Lo kind-windows-amd64.exe https://kind.sigs.k8s.io/dl/v0.20.0/kind-windows-amd64
+>    curl.exe -Lo kind-windows-amd64.exe https://kind.sigs.k8s.io/dl/v0.31.0/kind-windows-amd64
 >    Move-Item .\kind-windows-amd64.exe c:\windows\system32\kind.exe
 >    ```
 > 3. Install kubectl
@@ -29,7 +29,7 @@ This guide will help you set up a Kind (Kubernetes in Docker) cluster for the Ea
 >    ```
 > 2. Install Kind
 >    ```bash
->    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.27.0/kind-linux-amd64
+>    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-amd64
 >    chmod +x ./kind
 >    sudo mv ./kind /usr/local/bin/kind
 >    ```
