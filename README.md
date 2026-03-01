@@ -88,7 +88,7 @@ Learn Kubernetes concepts in a 12 hour tutorial by TrainWithShubham [here](https
 38. **Database Deployments** - [MySQL with Persistence](./examples/mysql/) - Stateful application patterns
 39. **Web Application Hosting** - [NGINX Deployment](./examples/nginx/) - Complete application stacks
 
-## Practice Projects
+## Practice Projects and advanced projects
 
 1. [Microservices on k8s](https://github.com/LondheShubham153/microservices-k8s)
 2. [Django App Deployment](https://github.com/LondheShubham153/django-todo-cicd)
