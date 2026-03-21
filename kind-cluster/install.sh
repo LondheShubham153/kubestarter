@@ -29,9 +29,9 @@ if ! command -v kind &>/dev/null; then
   KIND_VERSION="v0.31.0"
   ARCH=$(uname -m)
   if [ "$ARCH" = "x86_64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/${VERSION}/kind-linux-amd64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64
   elif [ "$ARCH" = "aarch64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/${VERSION}/kind-linux-arm64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-arm64
   else
     echo "❌ Unsupported architecture: $ARCH"
     exit 1
