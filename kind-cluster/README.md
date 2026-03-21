@@ -12,11 +12,11 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: control-plane
-    image: kindest/node:v1.33.1
+    image: kindest/node:v1.35.1
   - role: worker
-    image: kindest/node:v1.33.1
+    image: kindest/node:v1.35.1
   - role: worker
-    image: kindest/node:v1.33.1
+    image: kindest/node:v1.35.1
 ```
 Create the cluster using the configuration file:
 
