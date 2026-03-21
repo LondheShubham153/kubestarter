@@ -51,8 +51,7 @@ if ! command -v kubectl &>/dev/null; then
   echo "📦 Installing kubectl (latest stable version)..."
 
   ARCH=$(uname -m)
-  VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
-
+  VERSION=$(curl -fsSL --retry 3 --retry-delay 2 https://dl.k8s.io/release/stable.txt)
   if [ "$ARCH" = "x86_64" ]; then
     curl -Lo ./kubectl "https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
   elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
