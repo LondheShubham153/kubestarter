@@ -29,9 +29,9 @@ if ! command -v kind &>/dev/null; then
 
   ARCH=$(uname -m)
   if [ "$ARCH" = "x86_64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-amd64
   elif [ "$ARCH" = "aarch64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-arm64
   else
     echo "❌ Unsupported architecture: $ARCH"
     exit 1
@@ -51,7 +51,7 @@ if ! command -v kubectl &>/dev/null; then
   echo "📦 Installing kubectl (latest stable version)..."
 
   ARCH=$(uname -m)
-  VERSION=$(curl -Ls https://dl.k8s.io/release/stable.txt)
+  VERSION=$(curl -L -s https://dl.k8s.io/release/stable.txt)
 
   if [ "$ARCH" = "x86_64" ]; then
     curl -Lo ./kubectl "https://dl.k8s.io/release/${VERSION}/bin/linux/amd64/kubectl"
