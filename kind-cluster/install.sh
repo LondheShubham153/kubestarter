@@ -13,7 +13,7 @@ if ! command -v docker &>/dev/null; then
   sudo apt-get update -y
   sudo apt-get install -y docker.io
 
-  echo "👤 Adding current user to docker group..."
+  echo "👤 Adding current user to Docker group..."
   sudo usermod -aG docker "$USER"
 
   echo "✅ Docker installed and user added to docker group."
@@ -29,9 +29,9 @@ if ! command -v kind &>/dev/null; then
 
   ARCH=$(uname -m)
   if [ "$ARCH" = "x86_64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-amd64
   elif [ "$ARCH" = "aarch64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-arm64
   else
     echo "❌ Unsupported architecture: $ARCH"
     exit 1
