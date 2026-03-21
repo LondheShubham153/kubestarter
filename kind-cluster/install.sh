@@ -11,7 +11,14 @@ if ! command -v docker &>/dev/null; then
   echo "📦 Installing Docker..."
   sudo apt-get update -y
   sudo apt-get install -y docker.io
-  sudo systemctl enable --now docker
+
+  # Guard systemctl — not available in all environments (e.g. WSL, containers)
+  if command -v systemctl &>/dev/null && [ -d /run/systemd/system ]; then
+    sudo systemctl enable --now docker
+  else
+    echo "⚠️  Docker installed, but systemd is not available here. Start the daemon with your environment's service manager."
+  fi
+
   echo "👤 Adding current user to docker group..."
   sudo usermod -aG docker "$USER"
   echo "⚠️  Run 'newgrp docker' or re-login for group changes to take effect."
@@ -26,7 +33,11 @@ fi
 if ! command -v kind &>/dev/null; then
   echo "📦 Installing Kind..."
 
-  if ! KIND_VERSION="$(curl -fsSL https://api.github.com/repos/kubernetes-sigs/kind/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')"; then
+  if ! KIND_VERSION="$(
+    curl -fsSL https://api.github.com/repos/kubernetes-sigs/kind/releases/latest \
+      | grep '"tag_name"' \
+      | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/'
+  )"; then
     echo "❌ Failed to fetch Kind version. Check your internet connection."
     exit 1
   elif [ -z "$KIND_VERSION" ]; then
