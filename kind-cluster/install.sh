@@ -28,10 +28,11 @@ if ! command -v kind &>/dev/null; then
   echo "📦 Installing Kind..."
 
   ARCH=$(uname -m)
+  VERSION=$(curl -s https://api.github.com/repos/kubernetes-sigs/kind/releases/latest | grep tag_name | cut -d '"' -f 4)
   if [ "$ARCH" = "x86_64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-amd64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/${VERSION}/kind-linux-amd64
   elif [ "$ARCH" = "aarch64" ]; then
-    curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.29.0/kind-linux-arm64
+    curl -Lo ./kind https://kind.sigs.k8s.io/dl/${VERSION}/kind-linux-arm64
   else
     echo "❌ Unsupported architecture: $ARCH"
     exit 1
