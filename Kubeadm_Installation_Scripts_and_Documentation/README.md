@@ -111,16 +111,32 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 5. **Install Kubernetes Components**:
     ```bash
-    sudo apt-get update
-    sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+   # Update system and install prerequisites
+   sudo apt-get update
+   sudo apt-get install -y apt-transport-https ca-certificates curl gpg
 
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+   # Create keyrings directory
+   sudo mkdir -p /etc/apt/keyrings
 
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+   # Add Kubernetes GPG key (v1.35)
+   curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key \
+   | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-    sudo apt-get update
-    sudo apt-get install -y kubelet kubeadm kubectl
-    sudo apt-mark hold kubelet kubeadm kubectl
+   # Add Kubernetes repository (v1.35)
+   echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' \
+   | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+   # Update package list
+   sudo apt-get update
+
+   # Install Kubernetes components
+   sudo apt-get install -y kubelet kubeadm kubectl
+
+   # Prevent automatic upgrades to maintain version consistency
+   sudo apt-mark hold kubelet kubeadm kubectl
+
+   # (Optional) To allow upgrades later
+   # sudo apt-mark unhold kubelet kubeadm kubectl
     ```
 
 ## Execute ONLY on the "Master" Node
