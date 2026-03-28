@@ -132,9 +132,9 @@ This guide outlines the steps needed to set up a Kubernetes cluster using `kubea
 
 2. **Set Up Local kubeconfig**:
     ```bash
-    mkdir -p "$HOME"/.kube
-    sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
-    sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
+    mkdir -p $HOME/.kube
+   sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
+   sudo chown $(id -u):$(id -g) $HOME/.kube/config
     ```
 
 3. **Install a Network Plugin (Calico)**:
