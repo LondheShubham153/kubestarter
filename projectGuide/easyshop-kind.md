@@ -112,6 +112,7 @@ This is just a preview want more details, then use `tree` inside the repo.
 >   ```bash
 >   git clone https://github.com/iemafzalhassan/EasyShop.git
 >   cd EasyShop
+>   git checkout DevOps
 >   ```
 
 > ### 2. Build and Push Docker Images
@@ -171,6 +172,7 @@ This is just a preview want more details, then use `tree` inside the repo.
 >     namespace: easyshop
 >   data:
 >     MONGODB_URI: "mongodb://mongodb-service:27017/easyshop"
+>     REDIS_URI: "redis://easyshop-redis:6379"
 >     NODE_ENV: "production"
 >     NEXT_PUBLIC_API_URL: "http://YOUR_EC2_PUBLIC_IP/api"  # Replace with your YOUR_EC2_PUBLIC_IP
 >     NEXTAUTH_URL: "http://YOUR_EC2_PUBLIC_IP"             # Replace with your YOUR_EC2_PUBLIC_IP
@@ -195,75 +197,76 @@ This is just a preview want more details, then use `tree` inside the repo.
 >```
 
 ##### 8. Deploy EasyShop
-###### Create or update `kubernetes/08easyshop-deployment.yaml`:
+###### Create or update `kubernetes/08-easyshop-deployment.yaml`:
 >   ```yaml
->apiVersion: apps/v1
->kind: Deployment
->metadata:
->  name: easyshop
->  namespace: easyshop
->spec:
->  replicas: 2
->  selector:
->    matchLabels:
->      app: easyshop
->  template:
->    metadata:
->      labels:
+> apiVersion: apps/v1
+> kind: Deployment
+> metadata:
+>   name: easyshop
+>   namespace: easyshop
+> spec:
+>   replicas: 2
+>   selector:
+>     matchLabels:
 >       app: easyshop
->    spec:
->      containers:
->        - name: easyshop
->          image: iemafzal/easyshop:latest
->          imagePullPolicy: Always
->          ports:
->            - containerPort: 3000
->          envFrom:
->            - configMapRef:
->                name: easyshop-config
->            - secretRef:
->                name: easyshop-secrets
->         env:
->           - name: NEXTAUTH_URL
->             valueFrom:
->                configMapKeyRef:
->                  name: easyshop-config
->                  key: NEXTAUTH_URL
->            - name: NEXTAUTH_SECRET
->              valueFrom:
->                secretKeyRef:
->                  name: easyshop-secrets
->                  key: NEXTAUTH_SECRET
->            - name: JWT_SECRET
->              valueFrom:
->                secretKeyRef:
+>   template:
+>     metadata:
+>       labels:
+>         app: easyshop
+>     spec:
+>       containers:
+>         - name: easyshop
+>           image: iemafzal/easyshop-app:latest 
+>           imagePullPolicy: Always
+>           ports:
+>             - containerPort: 3000
+>           envFrom:
+>             - configMapRef:
+>                 name: easyshop-config
+>             - secretRef:
 >                 name: easyshop-secrets
->                  key: JWT_SECRET
->          resources:
->            requests:
->              memory: "256Mi"
->              cpu: "200m"
->            limits:
->              memory: "512Mi"
->              cpu: "500m"
->          startupProbe:
->            httpGet:
->              path: /
->              port: 3000
->            failureThreshold: 30
->            periodSeconds: 10
->          readinessProbe:
->            httpGet:
->              path: /
->              port: 3000
->            initialDelaySeconds: 20
->            periodSeconds: 15
->          livenessProbe:
->            httpGet:
->              path: /
->              port: 3000
->            initialDelaySeconds: 25
->            periodSeconds: 20
+>           env:
+>             - name: NEXTAUTH_URL
+>               valueFrom:
+>                 configMapKeyRef:
+>                   name: easyshop-config
+>                   key: NEXTAUTH_URL
+>             - name: NEXTAUTH_SECRET
+>               valueFrom:
+>                 secretKeyRef:
+>                   name: easyshop-secrets
+>                   key: NEXTAUTH_SECRET
+>             - name: JWT_SECRET
+>               valueFrom:
+>                 secretKeyRef:
+>                   name: easyshop-secrets
+>                   key: JWT_SECRET
+>           resources:
+>             requests:
+>               memory: "256Mi"
+>               cpu: "200m"
+>             limits:
+>               memory: "512Mi"
+>               cpu: "500m"
+>           startupProbe:
+>             httpGet:
+>               path: /
+>               port: 3000
+>             failureThreshold: 30
+>             periodSeconds: 10
+>           readinessProbe:
+>             httpGet:
+>               path: /
+>               port: 3000
+>             initialDelaySeconds: 20
+>             periodSeconds: 15
+>           livenessProbe:
+>             httpGet:
+>               path: /
+>               port: 3000
+>             initialDelaySeconds: 25
+>             periodSeconds: 20
+> 
 >   ```
 
 >    ```zsh
@@ -302,7 +305,7 @@ This is just a preview want more details, then use `tree` inside the repo.
 >     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 > spec:
 >   rules:
->   - host: "51.20.251.235.nip.io"
+>   - host: "13.50.235.247.nip.ioo"
 >     http:
 >       paths:
 >       - path: /
@@ -331,18 +334,25 @@ This is just a preview want more details, then use `tree` inside the repo.
 >     spec:
 >       containers:
 >       - name: migration
->         image: iemafzal/easyshop-migration:latest  # update with the name that you have build.
+>         image: iemafzal/easyshop-migration:latest
 >         imagePullPolicy: Always
->         env:
->         - name: MONGODB_URI
->           value: "mongodb://mongodb-service:27017/easyshop"
+>         envFrom:
+>         - configMapRef:
+>             name: easyshop-config
 >       restartPolicy: OnFailure
 > ```
 
 >   ```bash
 >      # Run database migration
->      kubectl apply -f kubernetes/migration-job.yaml
+>      kubectl apply -f kubernetes/12-migration-job.yaml
 >   ```
+
+> ##### 11. Apply redis deployment & service
+> ```zsh
+>    kubectl apply -f kubernetes/13-redis-service.yaml
+>    kubectl apply -f kubernetes/14-redis-deployment.yaml
+> ```
+>
 
 ## Verification
 1. Check deployment status
