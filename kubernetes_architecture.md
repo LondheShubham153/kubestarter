@@ -1,3 +1,7 @@
+
+
+
+
 # Kubernetes Architecture Explained
 
 This document explains the key components that make up the architecture of a Kubernetes cluster, in simple terms.
@@ -11,6 +15,10 @@ This document explains the key components that make up the architecture of a Kub
 ---
 
 ![Kubernetes Architecture Diagram](https://miro.medium.com/v2/resize:fit:1400/1*0Sudxeu5mQyN3ahi1FV49A.png)
+
+![Kubernetes Architecture Diagram with Animation](https://github.com/LondheShubham153/kubestarter/assets/51821426/ebc00e79-9f6c-4212-9b06-852c1feacb43)
+
+
 
 
 ## Control Plane (Master Node Components)
