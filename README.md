@@ -1,4 +1,4 @@
-## Kubernetes Kickstarter
+## KubeStarter - A Complete Kubernetes Guide
 
 ### Kubernetes In One Shot
 
