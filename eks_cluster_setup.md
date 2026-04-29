@@ -49,7 +49,7 @@ eksctl utils associate-iam-oidc-provider \
 ```bash
 eksctl create nodegroup --cluster=my-cluster \
                        --region=us-west-2 \
-                       --name=my-cluster \
+                       --name=mac-nodes \
                        --node-type=t2.medium \
                        --nodes=2 \
                        --nodes-min=2 \
