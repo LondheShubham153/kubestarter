@@ -134,7 +134,7 @@ This is just a preview want more details, then use `tree` inside the repo.
 > #### 2.3 Build Migration Image
 >    ```bash
 >    # Build the migration image
->    docker build -t your-dockerhub-username/easyshop-migration:latest -f Dockerfile.migration .
+>    docker build -t your-dockerhub-username/easyshop-migration:latest -f scripts/Dockerfile.migration .
 > 
 >    # Push to Docker Hub
 >    docker push your-dockerhub-username/easyshop-migration:latest
