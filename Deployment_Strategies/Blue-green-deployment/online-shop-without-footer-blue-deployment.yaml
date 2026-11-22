@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: online-shop-blue
+  name: online-shop-blue
+  namespace: blue-green-ns
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: online-shop-blue
+  template:
+    metadata:
+      labels:
+        app: online-shop-blue
+    spec:
+      containers:
+      - image: amitabhdevops/online_shop_without_footer
+        name: online-shop-blue
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: online-shop-blue-deployment-service
+  namespace: blue-green-ns
+spec:
+  selector:
+    app: online-shop-blue
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3000
+      nodePort: 30001
+      
+      

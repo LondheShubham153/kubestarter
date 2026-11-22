@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: simple-canary
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>NGINX - Version 1</title>
+      <style>
+        body {
+          background-color: #f0f0f0;
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }
+        .container {
+          background-color: white;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          padding: 40px;
+          text-align: center;
+          max-width: 600px;
+        }
+        h1 {
+          color: #009639;
+          margin-bottom: 20px;
+        }
+        p {
+          color: #333;
+          font-size: 18px;
+          line-height: 1.6;
+        }
+        .version {
+          margin-top: 30px;
+          font-weight: bold;
+          font-size: 24px;
+          color: #009639;
+        }
+        .nginx-logo {
+          width: 150px;
+          margin-bottom: 20px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <img src="https://nginx.org/nginx.png" alt="NGINX Logo" class="nginx-logo">
+        <h1>Welcome to NGINX!</h1>
+        <p>If you see this page, the NGINX web server is successfully installed and working.</p>
+        <div class="version">Version 1 (Stable)</div>
+      </div>
+    </body>
+    </html>

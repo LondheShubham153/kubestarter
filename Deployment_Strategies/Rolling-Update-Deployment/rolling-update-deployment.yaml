@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: online-shop
+  name: online-shop
+  namespace: rolling-ns
+spec:
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1             # Optional - 1 extra Pod can be created during update
+      maxUnavailable: 0       # Optional - 0 unavailable Pods ensure 0 Downtime
+  selector:
+    matchLabels:
+      app: online-shop
+  template:
+    metadata:
+      labels:
+        app: online-shop
+    spec:
+      containers:
+      - name: online-shop
+        image: amitabhdevops/online_shop
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
